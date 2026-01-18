@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Product Deleted{% endblock %}
+
+{% block content %}
+<section class="card card--danger rise-in">
+    <div class="card-icon card-icon--danger">
+        <i data-lucide="trash-2"></i>
+    </div>
+    <span class="tag tag--danger"><i data-lucide="check"></i> Product Removed</span>
+    <header>
+        <h1>Catalog Updated</h1>
+        <p class="helper-text">The product has been permanently removed from the system.</p>
+    </header>
+    <div class="callout callout--danger">
+        <i data-lucide="info"></i>
+        <div>Need a replacement? Add a new product so the gap is covered.</div>
+    </div>
+    <div class="split-actions">
+        <a role="button" href="{% url 'create_product' %}"><i data-lucide="plus"></i> Add Product</a>
+        <a role="button" class="secondary" href="{% url 'product_list' %}"><i data-lucide="list"></i> View Catalog</a>
+        <a role="button" class="secondary" href="{% url 'home' %}"><i data-lucide="home"></i> Dashboard</a>
+    </div>
+</section>
+<script>lucide.createIcons();</script>
+{% endblock %}

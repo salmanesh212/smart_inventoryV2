@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Order Created{% endblock %}
+
+{% block content %}
+<section class="card card--success rise-in">
+    <div class="card-icon card-icon--success">
+        <i data-lucide="check-circle"></i>
+    </div>
+    <span class="tag tag--success"><i data-lucide="sparkles"></i> Order Created</span>
+    <header>
+        <h1>Success!</h1>
+        <p class="helper-text">Order #{{ order.id }} is now live in the system and ready for processing.</p>
+    </header>
+
+    <ul class="data-points">
+        <li><i data-lucide="hash"></i> <strong>Order Number:</strong> #{{ order.id }}</li>
+        <li><i data-lucide="calendar"></i> <strong>Order Date:</strong> {{ order.order_date }}</li>
+        <li><i data-lucide="user"></i> <strong>Customer:</strong> {{ order.customer.name }}</li>
+    </ul>
+
+    <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem;"><i data-lucide="package" style="width:18px;height:18px;display:inline;vertical-align:middle;"></i> Order Items</h3>
+    <div class="table-card">
+        <table role="grid">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.items.all %}
+                <tr>
+                    <td><strong>{{ item.product.name }}</strong></td>
+                    <td>{{ item.quantity }}</td>
+                    <td>${{ item.product.price }}</td>
+                    <td><strong>${{ item.quantity|floatformat:0 }}</strong></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" style="text-align: center;">No items in this order.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="split-actions" style="margin-top: 1.5rem;">
+        <a role="button" href="{% url 'create_order' %}"><i data-lucide="plus"></i> Create Another</a>
+        <a role="button" class="secondary" href="{% url 'display_orders' %}"><i data-lucide="list"></i> View Orders</a>
+        <a role="button" class="secondary" href="{% url 'home' %}"><i data-lucide="home"></i> Dashboard</a>
+    </div>
+</section>
+<script>lucide.createIcons();</script>
+{% endblock %}

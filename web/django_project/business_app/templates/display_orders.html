@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}All Orders{% endblock %}
+
+{% block content %}
+<section class="card rise-in">
+    <div class="card-icon card-icon--warning">
+        <i data-lucide="receipt"></i>
+    </div>
+    <div class="eyebrow"><i data-lucide="clock"></i> Orders</div>
+    <header class="section-header">
+        <div>
+            <h1>Order History</h1>
+            {% if orders %}
+                <span class="tag"><i data-lucide="database"></i> {{ orders|length }} records</span>
+            {% endif %}
+            <p class="helper-text">Track every booking in chronological order to keep logistics transparent.</p>
+        </div>
+        <a role="button" href="{% url 'create_order' %}"><i data-lucide="plus"></i> New Order</a>
+    </header>
+
+    {% if orders %}
+        {% for order in orders %}
+        <div class="card card--soft" style="margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <span class="tag"><i data-lucide="hash"></i> Order #{{ order.id }}</span>
+                    <h3 style="margin: 0.5rem 0;"><i data-lucide="user" style="width:18px;height:18px;display:inline;vertical-align:middle;"></i> {{ order.customer.name }}</h3>
+                    <p class="helper-text" style="margin: 0;"><i data-lucide="calendar" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> {{ order.order_date }}</p>
+                </div>
+            </div>
+            
+            {% if order.items.all %}
+            <div class="table-card" style="margin-top: 1rem;">
+                <table role="grid">
+                    <thead>
+                        <tr>
+                            <th><i data-lucide="package" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> Product</th>
+                            <th><i data-lucide="hash" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> Qty</th>
+                            <th><i data-lucide="dollar-sign" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items.all %}
+                        <tr>
+                            <td>{{ item.product.name }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>${{ item.product.price }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="helper-text" style="margin-top: 1rem;">No items in this order.</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="callout callout--amber">
+            <i data-lucide="inbox"></i>
+            <div>No orders found just yet. Kick things off by logging your first sale.</div>
+        </div>
+    {% endif %}
+
+    <div class="split-actions">
+        <a role="button" class="secondary" href="{% url 'home' %}"><i data-lucide="arrow-left"></i> Back to Home</a>
+    </div>
+</section>
+<script>lucide.createIcons();</script>
+{% endblock %}

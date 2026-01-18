@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Product List{% endblock %}
+
+{% block content %}
+<section class="card rise-in">
+    <div class="card-icon card-icon--primary">
+        <i data-lucide="package"></i>
+    </div>
+    <div class="eyebrow"><i data-lucide="layers"></i> Products</div>
+    <header class="section-header">
+        <div>
+            <h1>Product Catalog</h1>
+            <p class="helper-text">Browse everything in your catalog and make edits in seconds.</p>
+        </div>
+        <a href="{% url 'create_product' %}" role="button"><i data-lucide="plus"></i> Add Product</a>
+    </header>
+
+    <div class="table-card">
+        <table role="grid">
+            <thead>
+                <tr>
+                    <th scope="col"><i data-lucide="tag" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> Name</th>
+                    <th scope="col"><i data-lucide="folder" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> Category</th>
+                    <th scope="col"><i data-lucide="dollar-sign" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> Price</th>
+                    <th scope="col"><i data-lucide="settings" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td><a href="{% url 'product_read' product.id %}"><strong>{{ product.name }}</strong></a></td>
+                    <td><span class="tag">{{ product.category }}</span></td>
+                    <td><strong>${{ product.price }}</strong></td>
+                    <td>
+                        <div class="split-actions" style="gap: 0.5rem;">
+                            <a href="{% url 'product_update' product.id %}" role="button" class="secondary"><i data-lucide="edit-2"></i> Edit</a>
+                            <a href="{% url 'product_delete' product.id %}" role="button" class="danger-action"><i data-lucide="trash-2"></i> Delete</a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" style="text-align: center; padding: 2rem;">
+                        <div style="color: var(--brand-text-muted);">
+                            <i data-lucide="inbox" style="width:32px;height:32px;display:block;margin:0 auto 0.5rem;"></i>
+                            No products found. Add your first product to get started.
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+<script>lucide.createIcons();</script>
+{% endblock %}

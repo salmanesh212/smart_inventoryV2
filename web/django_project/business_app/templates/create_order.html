@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Order{% endblock %}
+
+{% block content %}
+<section class="card rise-in">
+    <div class="card-icon card-icon--warning">
+        <i data-lucide="shopping-cart"></i>
+    </div>
+    <p class="eyebrow"><i data-lucide="git-branch"></i> Order Pipeline</p>
+    <header>
+        <h1>Create Order</h1>
+        <p class="helper-text">Log a new customer order with products and quantities.</p>
+    </header>
+
+    <div class="callout callout--amber">
+        <i data-lucide="lightbulb"></i>
+        <div><strong>Tip:</strong> Make sure the customer is registered and products are created first.</div>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="form-grid form-grid--two">
+            <div>
+                <label for="customer_id"><i data-lucide="user"></i> Customer ID</label>
+                <input type="number" id="customer_id" name="customer_id" placeholder="E.g. 1, 2, 3..." min="1" required>
+            </div>
+            <div>
+                <label for="quantity"><i data-lucide="hash"></i> Quantity</label>
+                <input type="number" id="quantity" name="quantity" placeholder="E.g. 1, 2, 3..." min="1" value="1" required>
+            </div>
+        </div>
+
+        <div>
+            <label for="product_id"><i data-lucide="package"></i> Select Product</label>
+            <select id="product_id" name="product_id" required>
+                <option value="">-- Choose a product --</option>
+                {% for product in products %}
+                    <option value="{{ product.id }}">{{ product.name }} - ${{ product.price }}</option>
+                {% empty %}
+                    <option value="" disabled>No products available</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <p class="helper-text"><i data-lucide="info" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> The order date will be set automatically to today.</p>
+
+        <div class="split-actions">
+            <button type="submit"><i data-lucide="check"></i> Create Order</button>
+            <a role="button" class="secondary" href="{% url 'display_orders' %}"><i data-lucide="list"></i> View Orders</a>
+        </div>
+    </form>
+</section>
+<script>lucide.createIcons();</script>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Customer Registered{% endblock %}
+
+{% block content %}
+<section class="card card--success rise-in">
+    <div class="card-icon card-icon--success">
+        <i data-lucide="user-check"></i>
+    </div>
+    <span class="tag tag--success"><i data-lucide="check-circle"></i> Customer Registered</span>
+    <header>
+        <h1>Profile Added Successfully!</h1>
+        <p class="helper-text">You're all set. Use the generated ID any time you create an order.</p>
+    </header>
+
+    <ul class="data-points">
+        <li><i data-lucide="user"></i> <strong>Name:</strong> {{ customer.name }}</li>
+        <li><i data-lucide="mail"></i> <strong>Email:</strong> {{ customer.email }}</li>
+        {% if customer.id %}
+            <li><i data-lucide="hash"></i> <strong>Customer ID:</strong> {{ customer.id }} <small>(Save this for the ordering team.)</small></li>
+        {% endif %}
+    </ul>
+
+    <div class="split-actions">
+        <a role="button" href="{% url 'create_order' %}"><i data-lucide="shopping-cart"></i> Create Order</a>
+        <a role="button" class="secondary" href="{% url 'home' %}"><i data-lucide="home"></i> Home</a>
+    </div>
+</section>
+<script>lucide.createIcons();</script>
+{% endblock %}

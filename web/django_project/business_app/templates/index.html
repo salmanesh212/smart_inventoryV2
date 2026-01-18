@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Business System{% endblock %}
+
+{% block content %}
+<section class="hero rise-in">
+    <p class="eyebrow"><i data-lucide="zap"></i> Command Center</p>
+    <h1>Welcome to Your Dashboard</h1>
+    <p class="helper-text">Everything you need to keep products, customers, and orders perfectly in sync — all in one place.</p>
+    <div class="split-actions">
+        <a role="button" href="{% url 'create_order' %}"><i data-lucide="plus-circle"></i> Quick Order</a>
+        <a role="button" class="secondary" href="{% url 'product_list' %}"><i data-lucide="package-search"></i> View Catalog</a>
+    </div>
+</section>
+
+<div class="action-grid">
+    <article class="card card--soft rise-in">
+        <div class="card-icon card-icon--primary">
+            <i data-lucide="package"></i>
+        </div>
+        <header>
+            <div class="eyebrow"><i data-lucide="layers"></i> Products</div>
+            <h3>Keep inventory fresh</h3>
+        </header>
+        <p class="helper-text">Spin up new SKUs, refine categories, and keep pricing accurate across all channels.</p>
+        <footer>
+            <div class="split-actions">
+                <a role="button" href="{% url 'create_product' %}"><i data-lucide="plus"></i> Create</a>
+                <a role="button" class="secondary" href="{% url 'product_list' %}"><i data-lucide="list"></i> View All</a>
+            </div>
+        </footer>
+    </article>
+
+    <article class="card rise-in">
+        <div class="card-icon card-icon--success">
+            <i data-lucide="users"></i>
+        </div>
+        <header>
+            <div class="eyebrow"><i data-lucide="user-plus"></i> Customers</div>
+            <h3>Grow relationships</h3>
+        </header>
+        <p class="helper-text">Register new customers so fulfillment always knows exactly who to serve.</p>
+        <footer>
+            <a role="button" href="{% url 'register_customer' %}"><i data-lucide="user-plus"></i> Register Customer</a>
+        </footer>
+    </article>
+
+    <article class="card card--accent rise-in">
+        <div class="card-icon card-icon--warning">
+            <i data-lucide="shopping-cart"></i>
+        </div>
+        <header>
+            <div class="eyebrow"><i data-lucide="trending-up"></i> Orders</div>
+            <h3>Keep momentum</h3>
+        </header>
+        <p class="helper-text">Log sales as they happen and revisit the full order trail anytime you need.</p>
+        <footer>
+            <div class="split-actions">
+                <a role="button" href="{% url 'create_order' %}"><i data-lucide="plus"></i> Create</a>
+                <a role="button" class="secondary" href="{% url 'display_orders' %}"><i data-lucide="list"></i> History</a>
+            </div>
+        </footer>
+    </article>
+</div>
+
+<script>lucide.createIcons();</script>
+{% endblock %}

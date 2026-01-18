@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Product{% endblock %}
+
+{% block content %}
+<section class="card card--soft rise-in">
+    <div class="card-icon card-icon--primary">
+        <i data-lucide="package-plus"></i>
+    </div>
+    <p class="eyebrow"><i data-lucide="layers"></i> Inventory</p>
+    <header>
+        <h1>Create New Product</h1>
+        <p class="helper-text">Capture the essentials so pricing, forecasting, and ordering stay aligned.</p>
+    </header>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-grid form-grid--two">
+            <div>
+                <label for="name"><i data-lucide="tag"></i> Product Name</label>
+                <input type="text" id="name" name="name" placeholder="E.g. Latitude 7440" required>
+            </div>
+            <div>
+                <label for="category"><i data-lucide="folder"></i> Category</label>
+                <input type="text" id="category" name="category" placeholder="E.g. Electronics" required>
+            </div>
+        </div>
+
+        <div>
+            <label for="price"><i data-lucide="dollar-sign"></i> Price (USD)</label>
+            <input type="number" step="0.01" id="price" name="price" placeholder="1299.00" required>
+        </div>
+
+        <p class="helper-text"><i data-lucide="info" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> You can always refine inventory attributes later from the product detail page.</p>
+
+        <div class="split-actions">
+            <button type="submit"><i data-lucide="plus"></i> Create Product</button>
+            <a role="button" class="secondary" href="{% url 'product_list' %}"><i data-lucide="list"></i> View Catalog</a>
+        </div>
+    </form>
+</section>
+<script>lucide.createIcons();</script>
+{% endblock %}

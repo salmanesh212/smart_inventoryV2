@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Error{% endblock %}
+
+{% block content %}
+<section class="card card--danger rise-in">
+    <div class="card-icon card-icon--danger">
+        <i data-lucide="alert-triangle"></i>
+    </div>
+    <span class="tag tag--danger"><i data-lucide="x-circle"></i> Error</span>
+    <header>
+        <h1>Something went wrong</h1>
+        <p class="helper-text">{{ message }}</p>
+    </header>
+    <div class="callout callout--danger">
+        <i data-lucide="alert-circle"></i>
+        <div>Please try the action again or head back to the dashboard.</div>
+    </div>
+    <div class="split-actions">
+        <a role="button" class="secondary" href="{% url 'home' %}"><i data-lucide="home"></i> Return Home</a>
+    </div>
+</section>
+<script>lucide.createIcons();</script>
+{% endblock %}

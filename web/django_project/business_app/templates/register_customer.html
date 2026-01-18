@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Register Customer{% endblock %}
+
+{% block content %}
+<section class="card rise-in">
+    <div class="card-icon card-icon--success">
+        <i data-lucide="user-plus"></i>
+    </div>
+    <p class="eyebrow"><i data-lucide="users"></i> Customers</p>
+    <header>
+        <h1>Register Customer</h1>
+        <p class="helper-text">Capture primary contact info so future orders and invoices auto-fill correctly.</p>
+    </header>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-grid form-grid--two">
+            <div>
+                <label for="name"><i data-lucide="user"></i> Full Name</label>
+                <input type="text" id="name" name="name" placeholder="Jordan Williams" required>
+            </div>
+            <div>
+                <label for="email"><i data-lucide="mail"></i> Email Address</label>
+                <input type="email" id="email" name="email" placeholder="jordan@client.io" required>
+            </div>
+        </div>
+
+        <p class="helper-text"><i data-lucide="info" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> We only require essentials—add phone numbers and billing notes directly from the customer profile later.</p>
+
+        <div class="split-actions">
+            <button type="submit"><i data-lucide="user-check"></i> Register Customer</button>
+            <a role="button" class="secondary" href="{% url 'home' %}"><i data-lucide="x"></i> Cancel</a>
+        </div>
+    </form>
+</section>
+<script>lucide.createIcons();</script>
+{% endblock %}

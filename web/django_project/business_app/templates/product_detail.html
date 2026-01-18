@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Product Details{% endblock %}
+
+{% block content %}
+<section class="card rise-in">
+    <div class="card-icon card-icon--primary">
+        <i data-lucide="package"></i>
+    </div>
+    <span class="tag"><i data-lucide="eye"></i> Product Detail</span>
+    <header>
+        <h1>{{ product.name }}</h1>
+        <p class="helper-text">A quick snapshot for your inventory team.</p>
+    </header>
+
+    <ul class="data-points">
+        <li><i data-lucide="folder"></i> <strong>Category:</strong> {{ product.category }}</li>
+        <li><i data-lucide="dollar-sign"></i> <strong>Price:</strong> ${{ product.price }}</li>
+    </ul>
+
+    <div class="split-actions">
+        <a role="button" href="{% url 'product_update' product.id %}"><i data-lucide="edit-2"></i> Edit Product</a>
+        <a role="button" class="danger-action" href="{% url 'product_delete' product.id %}"><i data-lucide="trash-2"></i> Delete Product</a>
+        <a role="button" class="secondary" href="{% url 'product_list' %}"><i data-lucide="arrow-left"></i> Back to Catalog</a>
+    </div>
+</section>
+<script>lucide.createIcons();</script>
+{% endblock %}

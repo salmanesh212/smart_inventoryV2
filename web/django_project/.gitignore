@@ -1,0 +1,23 @@
+# Virtual Environments
+venv/
+env/
+.env
+.venv/
+venv_fix/
+
+# Python compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Database
+db.sqlite3
+db.sqlite3-journal
+
+# VS Code
+.vscode/
+
+# OS generated files
+.DS_Store
+Thumbs.db

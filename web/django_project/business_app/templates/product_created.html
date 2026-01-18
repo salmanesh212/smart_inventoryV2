@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Product Created{% endblock %}
+
+{% block content %}
+<section class="card card--success rise-in">
+    <div class="card-icon card-icon--success">
+        <i data-lucide="package-check"></i>
+    </div>
+    <span class="tag tag--success"><i data-lucide="sparkles"></i> Product Added</span>
+    <header>
+        <h1>New Inventory Live!</h1>
+        <p class="helper-text">The catalog now includes {{ product.name }}.</p>
+    </header>
+
+    <ul class="data-points">
+        <li><i data-lucide="tag"></i> <strong>Name:</strong> {{ product.name }}</li>
+        <li><i data-lucide="folder"></i> <strong>Category:</strong> {{ product.category }}</li>
+        <li><i data-lucide="dollar-sign"></i> <strong>Price:</strong> ${{ product.price }}</li>
+    </ul>
+
+    <div class="split-actions">
+        <a role="button" href="{% url 'product_read' product.id %}"><i data-lucide="eye"></i> View Product</a>
+        <a role="button" href="{% url 'create_product' %}"><i data-lucide="plus"></i> Create Another</a>
+        <a role="button" class="secondary" href="{% url 'home' %}"><i data-lucide="home"></i> Dashboard</a>
+    </div>
+</section>
+<script>lucide.createIcons();</script>
+{% endblock %}
