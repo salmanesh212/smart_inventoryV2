@@ -14,7 +14,7 @@ def list_products(request):
 def product_Create(request):
     if request.method == 'POST': #POST mean submit data to server
         try:
-            name = request.POST.get('name')
+            name = request.POST.get('name') #Prendre les données du formulaire
             category = request.POST.get('category')
             try:
                 price = float(request.POST.get('price'))
@@ -24,7 +24,7 @@ def product_Create(request):
             product.save()
             orderItem=OrderItem(product=product,quantity=0)
             orderItem.save()
-            return render(request, 'product_created.html', {'product': product})
+            return render(request, 'product_created.html', {'product': product}) #Render est une fnction qui permet d'afficher une page HTML
         except ValueError:
             print("Price must be a number and greater than zero.")
     return render(request, 'create_product.html')
