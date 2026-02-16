@@ -29,4 +29,5 @@ urlpatterns = [
     path('create_order/', views.create_order, name='create_order'),
     path('display_orders/', views.display_orders, name='display_orders'),
     path('products/', views.list_products, name='product_list'),
+    path('analytics/', views.analytics_dashboard, name='analytics_dashboard'),
 ]

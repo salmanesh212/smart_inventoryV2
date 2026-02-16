@@ -1,6 +1,8 @@
 #Done by BoyWonder
 from django import views
 from django.shortcuts import render
+from django.db.models import Sum, Count, F, Avg
+from django.db.models.functions import TruncMonth
 from .models import Product, Customer, OrderItem, Order
 
 # Create your views here.
@@ -88,6 +90,77 @@ def create_order(request):
 def display_orders(request):
     orders = Order.objects.all()
     return render(request, 'display_orders.html', {'orders': orders})
+
+
+def analytics_dashboard(request):
+    """Dashboard displaying key business analytics using Django ORM (same logic as the pandas notebook)."""
+
+    # --- Revenue per month ---
+    revenue_per_month_qs = (
+        Order.objects
+        .annotate(month=TruncMonth('order_date'))
+        .values('month')
+        .annotate(revenue=Sum(F('items__quantity') * F('items__product__price')))
+        .order_by('month')
+    )
+    revenue_labels = [entry['month'].strftime('%b %Y') if entry['month'] else 'N/A' for entry in revenue_per_month_qs]
+    revenue_data = [float(entry['revenue']) if entry['revenue'] else 0 for entry in revenue_per_month_qs]
+
+    # --- Best-selling products ---
+    best_products_qs = (
+        OrderItem.objects
+        .values(product_name=F('product__name'))
+        .annotate(total_qty=Sum('quantity'))
+        .order_by('-total_qty')
+    )
+    best_product_labels = [p['product_name'] for p in best_products_qs]
+    best_product_data = [p['total_qty'] for p in best_products_qs]
+
+    # --- Total stock value ---
+    stock_value = (
+        Product.objects
+        .aggregate(total=Sum(F('price') * F('id')))  # quantity_in_stock not in Django model, fallback
+    )
+    # Use raw SQL to get real stock value from the MySQL table which has quantity_in_stock
+    from django.db import connection
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT COALESCE(SUM(price * quantity_in_stock), 0) FROM Products")
+        total_stock_value = float(cursor.fetchone()[0])
+
+    # --- Average order value ---
+    avg_order_qs = (
+        Order.objects
+        .annotate(order_total=Sum(F('items__quantity') * F('items__product__price')))
+        .aggregate(avg_value=Avg('order_total'))
+    )
+    average_order_value = float(avg_order_qs['avg_value']) if avg_order_qs['avg_value'] else 0
+
+    # --- Purchase frequency per customer ---
+    customer_frequency_qs = (
+        Order.objects
+        .values(customer_name=F('customer__name'))
+        .annotate(order_count=Count('id'))
+        .order_by('-order_count')
+    )
+
+    # --- Summary counts ---
+    total_products = Product.objects.count()
+    total_customers = Customer.objects.count()
+    total_orders = Order.objects.count()
+
+    context = {
+        'revenue_labels': revenue_labels,
+        'revenue_data': revenue_data,
+        'best_product_labels': best_product_labels,
+        'best_product_data': best_product_data,
+        'total_stock_value': total_stock_value,
+        'average_order_value': round(average_order_value, 2),
+        'customer_frequency': customer_frequency_qs,
+        'total_products': total_products,
+        'total_customers': total_customers,
+        'total_orders': total_orders,
+    }
+    return render(request, 'analytics_dashboard.html', context)
 
 
 

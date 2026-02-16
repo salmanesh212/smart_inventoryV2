@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+
+{% block title %}Analytics Dashboard{% endblock %}
+
+{% block content %}
+<section class="hero rise-in">
+    <p class="eyebrow"><i data-lucide="bar-chart-3"></i> Analytics</p>
+    <h1>Business Analytics Dashboard</h1>
+    <p class="helper-text">Key performance indicators and insights from your business data.</p>
+</section>
+
+<!-- KPI Cards -->
+<div class="action-grid" style="margin-bottom: 2rem;">
+    <article class="card card--soft rise-in" style="text-align:center;">
+        <div class="card-icon card-icon--primary">
+            <i data-lucide="package"></i>
+        </div>
+        <header>
+            <div class="eyebrow">Products</div>
+            <h3 style="font-size:2.25rem; margin:0.25rem 0;">{{ total_products }}</h3>
+        </header>
+        <p class="helper-text">Total products in catalog</p>
+    </article>
+
+    <article class="card rise-in" style="text-align:center;">
+        <div class="card-icon card-icon--success">
+            <i data-lucide="users"></i>
+        </div>
+        <header>
+            <div class="eyebrow">Customers</div>
+            <h3 style="font-size:2.25rem; margin:0.25rem 0;">{{ total_customers }}</h3>
+        </header>
+        <p class="helper-text">Registered customers</p>
+    </article>
+
+    <article class="card card--accent rise-in" style="text-align:center;">
+        <div class="card-icon card-icon--warning">
+            <i data-lucide="shopping-cart"></i>
+        </div>
+        <header>
+            <div class="eyebrow">Orders</div>
+            <h3 style="font-size:2.25rem; margin:0.25rem 0;">{{ total_orders }}</h3>
+        </header>
+        <p class="helper-text">Total orders placed</p>
+    </article>
+</div>
+
+<!-- Stock Value & Average Order -->
+<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:1.5rem; margin-bottom:2rem;">
+    <article class="card rise-in" style="text-align:center;">
+        <div class="card-icon card-icon--primary">
+            <i data-lucide="warehouse"></i>
+        </div>
+        <header>
+            <div class="eyebrow">Stock Value</div>
+            <h3 style="font-size:2rem; margin:0.25rem 0;">${{ total_stock_value }}</h3>
+        </header>
+        <p class="helper-text">Total inventory value</p>
+    </article>
+
+    <article class="card rise-in" style="text-align:center;">
+        <div class="card-icon card-icon--success">
+            <i data-lucide="receipt"></i>
+        </div>
+        <header>
+            <div class="eyebrow">Avg Order Value</div>
+            <h3 style="font-size:2rem; margin:0.25rem 0;">${{ average_order_value }}</h3>
+        </header>
+        <p class="helper-text">Average revenue per order</p>
+    </article>
+</div>
+
+<!-- Charts -->
+<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap:1.5rem; margin-bottom:2rem;">
+    <article class="card rise-in">
+        <header>
+            <div class="eyebrow"><i data-lucide="trending-up"></i> Revenue</div>
+            <h3>Revenue per Month</h3>
+        </header>
+        <div style="padding:1rem;">
+            <canvas id="revenueChart"></canvas>
+        </div>
+    </article>
+
+    <article class="card rise-in">
+        <header>
+            <div class="eyebrow"><i data-lucide="award"></i> Top Products</div>
+            <h3>Best-Selling Products</h3>
+        </header>
+        <div style="padding:1rem;">
+            <canvas id="productsChart"></canvas>
+        </div>
+    </article>
+</div>
+
+<!-- Customer Frequency Table -->
+<article class="card rise-in" style="margin-bottom:2rem;">
+    <header>
+        <div class="eyebrow"><i data-lucide="repeat"></i> Frequency</div>
+        <h3>Purchase Frequency per Customer</h3>
+    </header>
+    <div style="padding:1rem; overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse;">
+            <thead>
+                <tr style="border-bottom:2px solid var(--brand-border);">
+                    <th style="text-align:left; padding:0.75rem;">Customer</th>
+                    <th style="text-align:right; padding:0.75rem;">Orders</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in customer_frequency %}
+                <tr style="border-bottom:1px solid var(--brand-border);">
+                    <td style="padding:0.75rem;">{{ entry.customer_name }}</td>
+                    <td style="text-align:right; padding:0.75rem;">
+                        <span style="background:var(--brand-success-bg); color:var(--brand-success); padding:0.25rem 0.75rem; border-radius:999px; font-weight:600;">
+                            {{ entry.order_count }}
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2" style="padding:0.75rem; text-align:center; color:var(--brand-text-muted);">No orders yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</article>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script>
+    // Color palette matching the dashboard theme
+    const PRIMARY = '#6366f1';
+    const PRIMARY_BG = 'rgba(99, 102, 241, 0.15)';
+    const ACCENT = '#f97316';
+    const SUCCESS = '#10b981';
+    const COLORS = ['#6366f1','#f97316','#10b981','#ef4444','#f59e0b','#8b5cf6','#06b6d4','#ec4899'];
+
+    // Revenue per month chart
+    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    new Chart(revenueCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ revenue_labels|safe }},
+            datasets: [{
+                label: 'Revenue ($)',
+                data: {{ revenue_data|safe }},
+                backgroundColor: PRIMARY_BG,
+                borderColor: PRIMARY,
+                borderWidth: 2,
+                borderRadius: 6,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { color: 'rgba(148,163,184,0.15)' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // Best-selling products chart
+    const productsCtx = document.getElementById('productsChart').getContext('2d');
+    new Chart(productsCtx, {
+        type: 'doughnut',
+        data: {
+            labels: {{ best_product_labels|safe }},
+            datasets: [{
+                data: {{ best_product_data|safe }},
+                backgroundColor: COLORS.slice(0, {{ best_product_labels|length }}),
+                borderWidth: 0,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+</script>
+
+<script>lucide.createIcons();</script>
+{% endblock %}

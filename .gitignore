@@ -1,0 +1,50 @@
+# Virtual Environments
+venv/
+venv_fix/
+env/
+.env
+.venv/
+
+# Python compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Database files
+*.sqlite3
+*.sqlite3-journal
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Byte-compiled / optimized
+*.py[cod]
+
+# Distribution / packaging
+*.egg
+*.whl
+
+# Environment variables
+.env
+*.env
+
+# Logs
+*.log
+
+# Site-packages (vendored venv)
+web/django_project/venv_fix/

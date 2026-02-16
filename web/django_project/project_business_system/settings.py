@@ -116,3 +116,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'business_management',
+        'USER': 'root',
+        'PASSWORD': 'Baz9oula<3',
+        'HOST': 'localhost',       # or your DB server IP
+        'PORT': '3306',            # default MySQL port
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
+    }
+}

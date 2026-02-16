@@ -1,5 +1,6 @@
 #part 2 by BoyWonder
 import mysql.connector
+
 class ProductDAO:
     def __init__(self, id, name, category, price,quantity_in_stock):
         self.id = id
