@@ -5,7 +5,7 @@
   <h3 align="center">Smart Inventory & Sales Management System V2</h3>
 
   <p align="center">
-    A complete business management system using OOP, MySQL persistence, Django web interface, and Pandas/NumPy analytics[cite: 4, 130].
+    A complete business management system using OOP, MySQL persistence, Django web interface, and Pandas/NumPy analytics.
     <br />
     <a href="https://github.com/salmanesh212/smart_inventoryV2"><strong>Explore the docs »</strong></a>
     <br />
@@ -57,14 +57,14 @@
 
 ## 🚀 About The Project
 
-[cite_start]This system is designed to manage the full lifecycle of a small company's operations, from inventory tracking and customer management to deep data analysis of sales trends[cite: 4, 9]. [cite_start]It utilizes a clean architecture to ensure that the business logic is decoupled from the database and the web interface[cite: 6, 139].
+This system is designed to manage the full lifecycle of a small company's operations, from inventory tracking and customer management to deep data analysis of sales trends. It utilizes a clean architecture to ensure that the business logic is decoupled from the database and the web interface.
 
 ### Key Capabilities:
-* [cite_start]**Core Business Logic (OOP):** Implementation of Product, Customer, and Order models with strict validation [cite: 13-14, 25, 31].
-* [cite_start]**Advanced Error Handling:** Use of custom exceptions like `OutOfStockException` and `InvalidEmailException` to maintain system stability [cite: 46-50].
-* [cite_start]**Data Access Layer (DAO):** Abstracted database interactions using the DAO pattern and MySQL transactions [cite: 69-73, 82].
-* [cite_start]**Web Management:** A Django-powered interface for CRUD operations and real-time order tracking [cite: 88, 97-101].
-* [cite_start]**Scientific Analysis:** Data-driven insights including monthly revenue, best-selling products, and stock value over time [cite: 112-119].
+* **Core Business Logic (OOP):** Implementation of Product, Customer, and Order models with strict validation.
+* **Advanced Error Handling:** Use of custom exceptions like `OutOfStockException` and `InvalidEmailException` to maintain system stability.
+* **Data Access Layer (DAO):** Abstracted database interactions using the DAO pattern and MySQL transactions.
+* **Web Management:** A Django-powered interface for CRUD operations and real-time order tracking.
+* **Scientific Analysis:** Data-driven insights including monthly revenue, best-selling products, and stock value over time.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -81,21 +81,21 @@
 
 ## 📂 Project Structure
 
-[cite_start]The project follows the modular structure specified in the architectural design [cite: 141-154]:
+The project follows a modular structure:
 
 ```bash
 smart_inventory/
-├── core/                   # Domain Layer (Logic & Models) [cite: 143]
-│   ├── models/             # OOP classes (Product, Customer, etc.)
-│   ├── exceptions/         # Custom Business Exceptions [cite: 145]
-│   └── services/           # Core business services
-├── database/               # Data Layer (MySQL Persistence) [cite: 147]
-│   ├── dao/                # Data Access Objects (CRUD logic)
-│   └── schema.sql          # SQL table definitions [cite: 149]
-├── web/                    # Presentation Layer (Django) [cite: 150]
-│   └── django_project/     # Web interface and CRUD views
-└── analytics/              # Analysis Layer (Data Science) [cite: 152]
-    └── analysis.ipynb      # Pandas/NumPy business insights
+├── core/                           # Domain Layer (Logic & Models)
+│   └── Part 1 by BoyWonder.py      # OOP classes, exceptions & services
+├── database/                       # Data Layer (MySQL Persistence)
+│   ├── dao/
+│   │   └── Part 2 by BoyWonder.py  # Data Access Objects (CRUD logic)
+│   └── schema.sql                  # SQL table definitions
+├── web/                            # Presentation Layer (Django)
+│   └── django_project/             # Web interface and CRUD views
+└── analytics/                      # Analysis Layer (Data Science)
+    └── analysis.ipynb              # Pandas/NumPy business insights
+```
 
 ## ⚡ Getting Started
 
@@ -166,7 +166,7 @@ To run the analysis notebooks:
     ```bash
     jupyter notebook
     ```
-3.  Open the `.ipynb` files located in the `notebooks/` directory (or root) to view data visualizations.
+3.  Open the `.ipynb` files located in the `analytics/` directory to view data visualizations.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
