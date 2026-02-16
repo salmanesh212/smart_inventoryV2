@@ -205,7 +205,8 @@ Contributions are vital to the open-source community. If you have a suggestion t
 ## 📞 Contact
 
 **Mohamed Salmane SHAME** - [GitHub Profile](https://github.com/salmanesh212)
-**Youssra SIFFEDINE**
+
+**Youssra SIFFEDINE** - 
 
 Project Link: [https://github.com/salmanesh212/smart_inventoryV2](https://github.com/salmanesh212/smart_inventoryV2)
 
