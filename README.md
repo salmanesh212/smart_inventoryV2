@@ -207,8 +207,6 @@ Contributions are vital to the open-source community. If you have a suggestion t
 **Mohamed Salmane SHAME** - [GitHub Profile](https://github.com/salmanesh212)
 **Youssra SIFEDDINE** - [GitHub Profile](https://github.com/youssrasifeddine-gif)
 
-**Youssra SIFFEDINE** - 
-
 Project Link: [https://github.com/salmanesh212/smart_inventoryV2](https://github.com/salmanesh212/smart_inventoryV2)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
