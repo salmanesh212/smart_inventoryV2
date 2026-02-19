@@ -2,10 +2,10 @@
 
 <br />
 <div align="center">
-  <h3 align="center">Smart Inventory & Sales Management System V2</h3>
+  <h3 align="center">Smart Inventory & Sales Management System V2 by Salmane SHAME and Youssra SIFFEDINE</h3>
 
   <p align="center">
-    A complete business management system using OOP, MySQL persistence, Django web interface, and Pandas/NumPy analytics.
+    A complete business management system using OOP, MySQL persistence, Django web interface, and Pandas/NumPy analytics
     <br />
     <a href="https://github.com/salmanesh212/smart_inventoryV2"><strong>Explore the docs »</strong></a>
     <br />
@@ -206,6 +206,8 @@ Contributions are vital to the open-source community. If you have a suggestion t
 
 **Mohamed Salmane SHAME** - [GitHub Profile](https://github.com/salmanesh212)
 **Youssra SIFEDDINE** - [GitHub Profile](https://github.com/youssrasifeddine-gif)
+
+**Youssra SIFFEDINE** - 
 
 Project Link: [https://github.com/salmanesh212/smart_inventoryV2](https://github.com/salmanesh212/smart_inventoryV2)
 
