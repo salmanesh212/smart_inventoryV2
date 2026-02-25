@@ -221,14 +221,30 @@ To run the analysis notebooks:
 
 ---
 
-## 🗺️ Roadmap
+## � Recent Updates
+
+**Database Schema Fixes (Migration 0004 & 0005):**
+- Fixed OrderItem-Order relationship: Restored ForeignKey relationship between `OrderItem` and `Order` (migration 0004)
+- Added Missing Field: Added `quantity_in_stock` field to `Product` model (migration 0005)
+- Updated Field Constraints: Expanded character limits for customer names, product names, and categories for better flexibility
+- Result: Analytics dashboard and order creation features now work seamlessly
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
 
 - [x] Initial Django Project Setup
-- [x] Database Models for Inventory Items
-- [x] Basic HTML Templates & Views
+- [x] Database Models for Inventory Items (Product, Customer, Order, OrderItem)
+- [x] HTML Templates & Views for CRUD operations
+- [x] Product Inventory Management with Stock Tracking
+- [x] Customer Registration with Email Validation
+- [x] Order Creation & Management
+- [x] Analytics Dashboard with Business Insights
+- [x] Database Schema Fixes & Migration Management
 - [ ] **Phase 2**: Integration of Pandas for Exporting Reports (CSV/Excel)
-- [ ] **Phase 3**: Advanced Visualization Charts (Matplotlib/Plotly) inside Django templates
+- [ ] **Phase 3**: Advanced Visualization Charts (Matplotlib/Plotly) improvements
 - [ ] **Phase 4**: REST API with Django Rest Framework
+- [ ] **Phase 5**: User Authentication & Permissions System
 
 See the [open issues](https://github.com/salmanesh212/smart_inventoryV2/issues) for a full list of proposed features.
 
