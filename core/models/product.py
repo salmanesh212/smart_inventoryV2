@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 class Product:
     """Represents a product in the inventory."""
 
-    def __init__(self, id: int, name: str, category: str, price: float, quantity_in_stock: int) -> None:
+    def __init__(self, id: int, name: str, category: str, price: float, quantity_in_stock: int):
         self.id = id
         self.name = name
         self.category = category

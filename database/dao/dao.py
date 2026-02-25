@@ -11,10 +11,10 @@ logger = logging.getLogger(__name__)
 class ProductDAO:
     """DAO for CRUD operations on the products table."""
 
-    def __init__(self, conn: pymysql.connections.Connection) -> None:
+    def __init__(self, conn: pymysql.connections.Connection):
         self.conn = conn
 
-    def save(self, product: Any) -> None:
+    def save(self, product: Any):
         """Insert a new product record into the database."""
         cursor = self.conn.cursor()
         try:
@@ -29,7 +29,7 @@ class ProductDAO:
             logger.error("Error saving product: %s", e)
             raise
 
-    def update(self, product: Any) -> None:
+    def update(self, product: Any):
         """Update an existing product record in the database."""
         cursor = self.conn.cursor()
         try:
@@ -44,7 +44,7 @@ class ProductDAO:
             logger.error("Error updating product: %s", e)
             raise
 
-    def delete(self, product_id: int) -> None:
+    def delete(self, product_id: int):
         """Delete a product record from the database."""
         cursor = self.conn.cursor()
         try:
@@ -56,7 +56,7 @@ class ProductDAO:
             logger.error("Error deleting product: %s", e)
             raise
 
-    def find_by_id(self, product_id: int) -> Optional[tuple]:
+    def find_by_id(self, product_id: int):
         """Find and return a product row by its ID."""
         cursor = self.conn.cursor()
         cursor.execute("SELECT * FROM products WHERE product_id=%s", (product_id,))
@@ -66,10 +66,10 @@ class ProductDAO:
 class CustomerDAO:
     """DAO for CRUD operations on the customers table."""
 
-    def __init__(self, conn: pymysql.connections.Connection) -> None:
+    def __init__(self, conn: pymysql.connections.Connection):
         self.conn = conn
 
-    def save(self, customer: Any) -> None:
+    def save(self, customer: Any):
         """Insert a new customer record into the database."""
         cursor = self.conn.cursor()
         try:
@@ -84,7 +84,7 @@ class CustomerDAO:
             logger.error("Error saving customer: %s", e)
             raise
 
-    def update(self, customer: Any) -> None:
+    def update(self, customer: Any):
         """Update an existing customer record in the database."""
         cursor = self.conn.cursor()
         try:
@@ -99,7 +99,7 @@ class CustomerDAO:
             logger.error("Error updating customer: %s", e)
             raise
 
-    def delete(self, customer_id: int) -> None:
+    def delete(self, customer_id: int):
         """Delete a customer record from the database."""
         cursor = self.conn.cursor()
         try:
@@ -111,7 +111,7 @@ class CustomerDAO:
             logger.error("Error deleting customer: %s", e)
             raise
 
-    def find_by_id(self, customer_id: int) -> Optional[tuple]:
+    def find_by_id(self, customer_id: int):
         """Find and return a customer row by its ID."""
         cursor = self.conn.cursor()
         cursor.execute("SELECT * FROM customers WHERE customer_id=%s", (customer_id,))
@@ -121,10 +121,10 @@ class CustomerDAO:
 class OrderDAO:
     """DAO for CRUD operations on the orders and order_items tables."""
 
-    def __init__(self, conn: pymysql.connections.Connection) -> None:
+    def __init__(self, conn: pymysql.connections.Connection):
         self.conn = conn
 
-    def save(self, order: Any) -> None:
+    def save(self, order: Any):
         """Insert a new order and its items into the database."""
         cursor = self.conn.cursor()
         try:
@@ -144,7 +144,7 @@ class OrderDAO:
             logger.error("Error saving order: %s", e)
             raise
 
-    def update(self, order: Any) -> None:
+    def update(self, order: Any):
         """Update an existing order and replace its items."""
         cursor = self.conn.cursor()
         try:
@@ -165,7 +165,7 @@ class OrderDAO:
             logger.error("Error updating order: %s", e)
             raise
 
-    def delete(self, order_id: int) -> None:
+    def delete(self, order_id: int):
         """Delete an order record from the database."""
         cursor = self.conn.cursor()
         try:
@@ -177,7 +177,7 @@ class OrderDAO:
             logger.error("Error deleting order: %s", e)
             raise
 
-    def find_by_id(self, order_id: int) -> Optional[tuple]:
+    def find_by_id(self, order_id: int):
         """Find and return an order row by its ID."""
         cursor = self.conn.cursor()
         cursor.execute("SELECT * FROM orders WHERE order_id=%s", (order_id,))

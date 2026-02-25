@@ -15,7 +15,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity_in_stock = models.IntegerField(default=0)
 
-    def __str__(self) -> str:
+    def __str__(self):
         return self.name
 
 
@@ -26,12 +26,12 @@ class Customer(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField(max_length=100, unique=True)
 
-    def clean(self) -> None:
+    def clean(self):
         """Validate the customer's email format."""
         if "@" not in self.email or "." not in self.email.split("@")[-1]:
             raise ValidationError({"email": "Please enter a valid email address."})
 
-    def __str__(self) -> str:
+    def __str__(self):
         return self.name
 
 
@@ -42,7 +42,7 @@ class Order(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     order_date = models.DateField(auto_now_add=True)
 
-    def __str__(self) -> str:
+    def __str__(self):
         return f"Order #{self.id} - {self.customer.name}"
 
 
@@ -53,9 +53,9 @@ class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField()
 
-    def get_subtotal(self) -> Decimal:
+    def get_subtotal(self):
         """Return the subtotal for this line item."""
         return self.product.price * self.quantity
 
-    def __str__(self) -> str:
+    def __str__(self):
         return f"{self.product.name} x{self.quantity}"

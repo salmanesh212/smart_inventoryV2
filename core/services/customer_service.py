@@ -11,11 +11,11 @@ logger = logging.getLogger(__name__)
 class CustomerService:
     """Service layer for customer operations."""
 
-    def __init__(self) -> None:
+    def __init__(self) :
         self.customers: dict[int, Customer] = {}
         self._next_id: int = 1
 
-    def register_customer(self, name: str, email: str) -> Customer:
+    def register_customer(self, name: str, email: str):
         """Register a new customer after validating their email."""
         customer = Customer(self._next_id, name, email)
         customer.validate_email()
@@ -26,21 +26,21 @@ class CustomerService:
         logger.info("Customer '%s' registered successfully", name)
         return customer
 
-    def get_customer(self, customer_id: int) -> Customer:
+    def get_customer(self, customer_id: int):
         """Retrieve a customer by their ID."""
         if customer_id not in self.customers:
             raise ValueError(f"Customer with id {customer_id} not found")
         return self.customers[customer_id]
 
-    def get_all_customers(self) -> list[Customer]:
+    def get_all_customers(self):
         """Return all registered customers."""
         return list(self.customers.values())
 
-    def search_by_name(self, keyword: str) -> list[Customer]:
+    def search_by_name(self, keyword: str):
         """Return customers whose name contains the keyword."""
         return [c for c in self.customers.values() if keyword.lower() in c.name.lower()]
 
-    def remove_customer(self, customer_id: int) -> Customer:
+    def remove_customer(self, customer_id: int) :
         """Remove and return a customer by their ID."""
         if customer_id not in self.customers:
             raise ValueError(f"Customer with id {customer_id} not found")

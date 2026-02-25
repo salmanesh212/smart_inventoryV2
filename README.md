@@ -59,13 +59,18 @@
 
 This system is designed to manage the full lifecycle of a small company's operations, from inventory tracking and customer management to deep data analysis of sales trends. It utilizes a clean architecture to ensure that the business logic is decoupled from the database and the web interface.
 
+**Skill Level:** Intermediate Python — demonstrating OOP, design patterns (DAO, MVC), custom exceptions, Django forms, Pandas/NumPy analysis, and professional code organization.
+
 ### Key Capabilities:
-* **Core Business Logic (OOP):** Implementation of Product, Customer, and Order models with strict validation.
-* **Advanced Error Handling:** Use of custom exceptions like `OutOfStockException` and `InvalidEmailException` to maintain system stability.
-* **Data Access Layer (DAO):** Abstracted database interactions using the DAO pattern and MySQL transactions.
-* **Web Management:** A Django-powered interface for CRUD operations on products, customers, and orders with inventory tracking.
-* **Analytics Dashboard:** Real-time business insights including monthly revenue trends, best-selling products, customer frequency analysis, and inventory value calculations.
+* **Core Business Logic (OOP):** Implementation of Product, Customer, and Order models with strict validation, comprehensive type hints, and docstrings throughout.
+* **Advanced Error Handling:** Use of custom exceptions like `OutOfStockException`, `InvalidEmailException`, and `InvalidQuantityException` to maintain system stability.
+* **Data Access Layer (DAO):** Abstracted database interactions using the DAO pattern and MySQL transactions with rollback support.
+* **Django Forms & Validation:** Clean separation of concerns using `ProductForm`, `CustomerForm`, and `OrderForm` with custom validation methods.
+* **Web Management:** A Django-powered interface for CRUD operations on products, customers, and orders with inventory tracking and real-time feedback.
+* **Analytics Dashboard:** Real-time business insights including monthly revenue trends, best-selling products, customer frequency analysis, and inventory value calculations with Chart.js visualizations.
 * **Inventory Management:** Track product stock levels with automatic deduction on order creation and stock validation.
+* **Unit Testing:** 18 comprehensive unit tests covering all core models, exceptions, and business logic with 100% pass rate.
+* **Data Analysis (Pandas/NumPy):** Jupyter notebook with full business insights narrative—revenue analysis, product performance, stock valuation, and customer frequency.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -89,22 +94,28 @@ smart_inventory/
 ├── core/                                   # Domain Layer (OOP Logic & Services)
 │   ├── models/                             # Product, Customer, Order, OrderItem classes
 │   ├── services/                           # Business logic services
-│   └── exceptions/                         # Custom exception classes
+│   ├── exceptions/                         # Custom exception classes
+│   └── tests/                              # Unit tests for all core models
 ├── database/                               # Data Layer (MySQL Persistence)
 │   ├── dao/                                # Data Access Objects (CRUD logic)
+│   │   └── dao.py                          # ProductDAO, CustomerDAO, OrderDAO classes
 │   ├── schema.sql                          # SQL table definitions
 │   └── populate.sql                        # Sample data population script
 ├── web/                                    # Presentation Layer (Django Web Interface)
 │   └── django_project/                     
 │       ├── business_app/                   # Main Django app with models, views, templates
 │       │   ├── models.py                   # Django ORM models
-│       │   ├── views.py                    # CRUD views & analytics dashboard
-│       │   ├── templates/                  # HTML templates for all pages
+│       │   ├── views.py                    # CRUD views & analytics dashboard (with type hints)
+│       │   ├── forms.py                    # ProductForm, CustomerForm, OrderForm with validation
+│       │   ├── templates/                  # HTML templates for all pages (Lucide icons, CSS)
 │       │   └── migrations/                 # Database migration history
 │       ├── project_business_system/        # Django project settings & configuration
 │       └── manage.py                       # Django management script
-└── analytics/                              # Analysis Layer (Data Science)
-    └── analysis.ipynb                      # Jupyter notebook for Pandas/NumPy analysis
+├── analytics/                              # Analysis Layer (Data Science)
+│   └── analysis.ipynb                      # Jupyter notebook with Pandas/NumPy analysis & business insights
+├── screenshots/                            # UI screenshots & demos
+├── requirements.txt                        # Python dependencies (Django, Pandas, NumPy, Matplotlib, PyMySQL)
+└── README.md                               # Project documentation
 ```
 
 **Key Models (Django):**
@@ -179,6 +190,28 @@ Ensure you have Python installed.
 
 ---
 
+## 🧪 Unit Testing
+
+The project includes **18 unit tests** covering all core business logic:
+
+```bash
+# Run all tests
+python -m unittest core.tests.test_models -v
+```
+
+**Test Coverage:**
+- `TestProduct`: Stock management, value calculations, exceptions
+- `TestCustomer`: Email validation, customer creation
+- `TestOrder`: Order item management, total calculation
+- `TestOrderItem`: Subtotal calculations
+- `TestOrderException`: Error handling for out-of-stock, invalid email, invalid quantity
+
+All tests pass with **100% success rate** ✅
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+
 ## 📖 Usage
 
 ### Web Application
@@ -215,19 +248,45 @@ To run the analysis notebooks:
     ```bash
     jupyter notebook
     ```
-4.  Open `analytics/analysis.ipynb` to view data visualizations and analysis scripts.
+4.  Open `analytics/analysis.ipynb` to view:
+   - Data extraction from MySQL into Pandas DataFrames
+   - Total revenue per month analysis
+   - Best-selling products breakdown
+   - Stock value calculations
+   - Average order value insights
+   - Customer purchase frequency
+   - Business visualizations with Matplotlib (4-panel dashboard)
+   - Full business insights narrative
+
+### UI Screenshots
+Screenshots of the Django web interface can be found in the `screenshots/` folder:
+- Home dashboard
+- Product list & management
+- Customer registration
+- Order creation & history
+- Analytics dashboard with charts
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ---
 
-## � Recent Updates
+## 🔄 Recent Updates (v2.1)
+
+**Enhanced Code Quality & Testing (Latest):**
+- ✅ Created `requirements.txt` with all dependencies (Django, Pandas, NumPy, PyMySQL, Matplotlib)
+- ✅ Implemented `forms.py` with `ProductForm`, `CustomerForm`, `OrderForm` using Django `ModelForm` and custom `clean()` validation methods
+- ✅ Refactored all views to use Django Forms instead of raw `request.POST` for better security and validation
+- ✅ Added 18 unit tests in `core/tests/test_models.py` covering all models, methods, and custom exceptions (100% pass rate)
+- ✅ Full return type hints (`-> None`, `-> float`, `-> str`, `-> HttpResponse`) on all core model methods and views
+- ✅ Enhanced Jupyter notebook with business insights narrative — markdown cells interpreting each analysis
+- ✅ Renamed database DAO file to professional naming (`dao.py`)
+- ✅ Created `screenshots/` folder for UI demonstrations
 
 **Database Schema Fixes (Migration 0004 & 0005):**
 - Fixed OrderItem-Order relationship: Restored ForeignKey relationship between `OrderItem` and `Order` (migration 0004)
 - Added Missing Field: Added `quantity_in_stock` field to `Product` model (migration 0005)
 - Updated Field Constraints: Expanded character limits for customer names, product names, and categories for better flexibility
-- Result: Analytics dashboard and order creation features now work seamlessly
+- Result: Analytics dashboard and order creation features work seamlessly
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -241,12 +300,55 @@ To run the analysis notebooks:
 - [x] Order Creation & Management
 - [x] Analytics Dashboard with Business Insights
 - [x] Database Schema Fixes & Migration Management
-- [ ] **Phase 2**: Integration of Pandas for Exporting Reports (CSV/Excel)
-- [ ] **Phase 3**: Advanced Visualization Charts (Matplotlib/Plotly) improvements
+- [x] Django Forms with Custom Validation (`forms.py`)
+- [x] Unit Tests for Core Business Logic (18 tests, 100% pass rate)
+- [x] Type Hints & Return Type Annotations
+- [x] Business Insights Narrative in Jupyter Notebook
+- [x] Clean Architecture & Code Organization
+- [ ] **Phase 2**: Send Order Confirmations via Email
+- [ ] **Phase 3**: Inventory Reorder Alerts & Low Stock Notifications
 - [ ] **Phase 4**: REST API with Django Rest Framework
-- [ ] **Phase 5**: User Authentication & Permissions System
+- [ ] **Phase 5**: User Authentication & Role-Based Permissions (Admin, Manager, Viewer)
+- [ ] **Phase 6**: Advanced Filters & Search in Product/Order Lists
 
 See the [open issues](https://github.com/salmanesh212/smart_inventoryV2/issues) for a full list of proposed features.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+
+## ✨ Code Quality & Best Practices
+
+This project demonstrates professional Python development practices:
+
+* **Type Hints:** Full type annotations on all function signatures and return types
+  ```python
+  def add_stock(self, qty: int) -> None:
+      """Add stock quantity to the product."""
+  ```
+
+* **Comprehensive Docstrings:** Every class and method includes clear documentation
+  ```python
+  def calculate_total(self) -> float:
+      """Calculate and return the total cost of the order."""
+  ```
+
+* **Clean Architecture:** Separation of concerns across layers:
+  - `core/` — Domain logic (business rules, models, exceptions)
+  - `database/` — Data persistence (DAO pattern, MySQL transactions)
+  - `web/` — Presentation (Django views, forms, templates)
+  - `analytics/` — Data analysis (Jupyter, Pandas, NumPy)
+
+* **Django Best Practices:**
+  - Model-based forms with custom validation
+  - Template inheritance and reusable components
+  - Proper error handling and user-friendly messages
+  - Admin panel for data management
+
+* **Error Handling:** Custom exceptions ensure clear error messaging
+  - `OutOfStockException` — Stock validation
+  - `InvalidEmailException` — Email format validation
+  - `InvalidQuantityException` — Quantity validation
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

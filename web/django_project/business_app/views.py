@@ -9,6 +9,7 @@ from django.db.models.functions import TruncMonth
 from django.core.exceptions import ValidationError
 
 from .models import Product, Customer, OrderItem, Order
+from .forms import ProductForm, CustomerForm, OrderForm
 
 logger = logging.getLogger(__name__)
 
@@ -25,25 +26,22 @@ def list_products(request: HttpRequest) -> HttpResponse:
 
 
 def product_Create(request: HttpRequest) -> HttpResponse:
-    """Create a new product."""
+    """Create a new product using ProductForm."""
     if request.method == 'POST':
-        try:
-            name = request.POST.get('name')
-            category = request.POST.get('category')
-            price = request.POST.get('price')
-            if not name or not category or not price:
-                raise ValueError("All fields are required.")
-            price = float(price)
-            if price <= 0:
-                raise ValueError("Price must be greater than zero.")
-            product = Product(name=name, category=category, price=price)
-            product.save()
-            logger.info("Product '%s' created", name)
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            product = form.save()
+            logger.info("Product '%s' created", product.name)
             return render(request, 'product_created.html', {'product': product})
-        except ValueError as e:
-            logger.warning("Product creation failed: %s", e)
-            return render(request, 'error.html', {'message': str(e)})
-    return render(request, 'create_product.html')
+        else:
+            message = "; ".join(
+                err for errors in form.errors.values() for err in errors
+            )
+            logger.warning("Product creation failed: %s", message)
+            return render(request, 'error.html', {'message': message})
+    else:
+        form = ProductForm()
+    return render(request, 'create_product.html', {'form': form})
 
 
 def product_read(request: HttpRequest, product_id: int) -> HttpResponse:
@@ -57,27 +55,27 @@ def product_read(request: HttpRequest, product_id: int) -> HttpResponse:
 
 
 def product_update(request: HttpRequest, NewProductid: int) -> HttpResponse:
-    """Update an existing product."""
+    """Update an existing product using ProductForm."""
     try:
         product = Product.objects.get(id=NewProductid)
     except Product.DoesNotExist:
         logger.warning("Product #%d not found for update", NewProductid)
         return render(request, 'error.html', {'message': 'Product not found.'})
     if request.method == 'POST':
-        try:
-            product.name = request.POST.get('name')
-            product.category = request.POST.get('category')
-            price = float(request.POST.get('price'))
-            if price <= 0:
-                raise ValueError("Price must be greater than zero.")
-            product.price = price
-            product.save()
+        form = ProductForm(request.POST, instance=product)
+        if form.is_valid():
+            form.save()
             logger.info("Product '%s' updated", product.name)
             return render(request, 'product_updated.html', {'product': product})
-        except ValueError as e:
-            logger.warning("Product update failed: %s", e)
-            return render(request, 'error.html', {'message': str(e)})
-    return render(request, 'update_product.html', {'product': product})
+        else:
+            message = "; ".join(
+                err for errors in form.errors.values() for err in errors
+            )
+            logger.warning("Product update failed: %s", message)
+            return render(request, 'error.html', {'message': message})
+    else:
+        form = ProductForm(instance=product)
+    return render(request, 'update_product.html', {'product': product, 'form': form})
 
 
 def product_delete(request: HttpRequest, product_id: int) -> HttpResponse:
@@ -93,61 +91,60 @@ def product_delete(request: HttpRequest, product_id: int) -> HttpResponse:
 
 
 def customer_registration(request: HttpRequest) -> HttpResponse:
-    """Register a new customer with email validation."""
+    """Register a new customer with email validation using CustomerForm."""
     if request.method == 'POST':
-        try:
-            name = request.POST.get('name')
-            email = request.POST.get('email')
-            if not name or not email:
-                raise ValueError("All fields are required.")
-            if "@" not in email or "." not in email.split("@")[-1]:
-                raise ValueError("Please enter a valid email address.")
-            if Customer.objects.filter(email=email).exists():
-                raise ValueError("A customer with this email already exists.")
-            customer = Customer(name=name, email=email)
-            customer.full_clean()
-            customer.save()
-            logger.info("Customer '%s' registered", name)
+        form = CustomerForm(request.POST)
+        if form.is_valid():
+            customer = form.save()
+            logger.info("Customer '%s' registered", customer.name)
             return render(request, 'customer_registered.html', {'customer': customer})
-        except (ValueError, ValidationError) as e:
-            logger.warning("Customer registration failed: %s", e)
-            return render(request, 'error.html', {'message': str(e)})
-    return render(request, 'register_customer.html')
+        else:
+            message = "; ".join(
+                err for errors in form.errors.values() for err in errors
+            )
+            logger.warning("Customer registration failed: %s", message)
+            return render(request, 'error.html', {'message': message})
+    else:
+        form = CustomerForm()
+    return render(request, 'register_customer.html', {'form': form})
 
 
 def create_order(request: HttpRequest) -> HttpResponse:
-    """Create a new order with items."""
+    """Create a new order with items using OrderForm."""
     products = Product.objects.all()
     if request.method == 'POST':
-        try:
-            customer_id = request.POST.get('customer_id')
-            customer = Customer.objects.get(id=customer_id)
-            product_id = request.POST.get('product_id')
-            product = Product.objects.get(id=product_id)
-            quantity = int(request.POST.get('quantity'))
-            if quantity <= 0:
-                raise ValueError("Quantity must be a positive number.")
-            if quantity > product.quantity_in_stock:
-                raise ValueError(
-                    f"Not enough stock. Available: {product.quantity_in_stock}, requested: {quantity}"
-                )
-            product.quantity_in_stock -= quantity
-            product.save()
-            order = Order(customer=customer)
-            order.save()
-            item = OrderItem(order=order, product=product, quantity=quantity)
-            item.save()
-            logger.info("Order #%d created for customer '%s'", order.id, customer.name)
-            return render(request, 'order_created.html', {'order': order})
-        except Customer.DoesNotExist:
-            logger.warning("Order creation failed: customer #%s not found", customer_id)
-            return render(request, 'error.html', {'message': 'Customer not found. Please register the customer first.'})
-        except Product.DoesNotExist:
-            logger.warning("Order creation failed: product #%s not found", product_id)
-            return render(request, 'error.html', {'message': 'Product not found. Please create the product first.'})
-        except ValueError as e:
-            logger.warning("Order creation failed: %s", e)
-            return render(request, 'error.html', {'message': str(e)})
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            try:
+                customer = Customer.objects.get(id=form.cleaned_data['customer_id'])
+                product = Product.objects.get(id=form.cleaned_data['product_id'])
+                quantity = form.cleaned_data['quantity']
+                if quantity > product.quantity_in_stock:
+                    raise ValueError(
+                        f"Not enough stock. Available: {product.quantity_in_stock}, requested: {quantity}"
+                    )
+                product.quantity_in_stock -= quantity
+                product.save()
+                order = Order(customer=customer)
+                order.save()
+                item = OrderItem(order=order, product=product, quantity=quantity)
+                item.save()
+                logger.info("Order #%d created for customer '%s'", order.id, customer.name)
+                return render(request, 'order_created.html', {'order': order})
+            except Customer.DoesNotExist:
+                logger.warning("Order creation failed: customer not found")
+                return render(request, 'error.html', {'message': 'Customer not found. Please register the customer first.'})
+            except Product.DoesNotExist:
+                logger.warning("Order creation failed: product not found")
+                return render(request, 'error.html', {'message': 'Product not found. Please create the product first.'})
+            except ValueError as e:
+                logger.warning("Order creation failed: %s", e)
+                return render(request, 'error.html', {'message': str(e)})
+        else:
+            message = "; ".join(
+                err for errors in form.errors.values() for err in errors
+            )
+            return render(request, 'error.html', {'message': message})
     return render(request, 'create_order.html', {'products': products})
 
 

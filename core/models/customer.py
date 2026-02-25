@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 class Customer:
     """Represents a customer in the system."""
 
-    def __init__(self, id: int, name: str, email: str) -> None:
+    def __init__(self, id: int, name: str, email: str):
         self.id = id
         self.name = name
         self.email = email

@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 class OrderItem:
     """Represents a single line item in an order."""
 
-    def __init__(self, product: Product, quantity: int) -> None:
+    def __init__(self, product: Product, quantity: int):
         self.product = product
         self.quantity = quantity
 

@@ -19,7 +19,7 @@ class Order:
     """Represents a customer order containing one or more items."""
 
     def __init__(self, id: int, customer: Customer, order_date: str,
-                 items: Optional[list[OrderItem]] = None) -> None:
+                 items: Optional[list[OrderItem]] = None):
         self.id = id
         self.customer = customer
         self.order_date = order_date
