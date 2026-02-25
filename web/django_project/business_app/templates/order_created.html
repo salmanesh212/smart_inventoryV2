@@ -36,7 +36,7 @@
                     <td><strong>{{ item.product.name }}</strong></td>
                     <td>{{ item.quantity }}</td>
                     <td>${{ item.product.price }}</td>
-                    <td><strong>${{ item.quantity|floatformat:0 }}</strong></td>
+                    <td><strong>${{ item.get_subtotal }}</strong></td>
                 </tr>
                 {% empty %}
                 <tr>

@@ -4,32 +4,32 @@ DROP DATABASE IF EXISTS business_management;
 CREATE DATABASE business_management;
 USE business_management;
 
-CREATE TABLE Products (
+CREATE TABLE products (
     product_id INT AUTO_INCREMENT PRIMARY KEY,
-    last_name VARCHAR(50),
-    category VARCHAR(50),
-    price DECIMAL(10,2) DEFAULT 0.00,
-    quantity_in_stock INT
+    name VARCHAR(100) NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    price DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    quantity_in_stock INT NOT NULL DEFAULT 0
 );
 
-CREATE TABLE Customers (
+CREATE TABLE customers (
     customer_id INT AUTO_INCREMENT PRIMARY KEY,
-    last_name VARCHAR(50) NOT NULL,
-    email VARCHAR(100) UNIQUE
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL
 );
 
-CREATE TABLE OrderItem (
-    orderitem_id INT AUTO_INCREMENT PRIMARY KEY,
-    product_id INT NOT NULL,
-    quantity INT,
-    FOREIGN KEY (product_id) REFERENCES Products(product_id)
-);
-
-CREATE TABLE `Order` (
+CREATE TABLE orders (
     order_id INT AUTO_INCREMENT PRIMARY KEY,
     customer_id INT NOT NULL,
-    order_date DATE,
-    orderitem_id INT NOT NULL,
-    FOREIGN KEY (customer_id) REFERENCES Customers(customer_id),
-    FOREIGN KEY (orderitem_id) REFERENCES OrderItem(orderitem_id)
+    order_date DATE NOT NULL,
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE
+);
+
+CREATE TABLE order_items (
+    orderitem_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
 );
