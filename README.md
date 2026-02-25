@@ -63,8 +63,9 @@ This system is designed to manage the full lifecycle of a small company's operat
 * **Core Business Logic (OOP):** Implementation of Product, Customer, and Order models with strict validation.
 * **Advanced Error Handling:** Use of custom exceptions like `OutOfStockException` and `InvalidEmailException` to maintain system stability.
 * **Data Access Layer (DAO):** Abstracted database interactions using the DAO pattern and MySQL transactions.
-* **Web Management:** A Django-powered interface for CRUD operations and real-time order tracking.
-* **Scientific Analysis:** Data-driven insights including monthly revenue, best-selling products, and stock value over time.
+* **Web Management:** A Django-powered interface for CRUD operations on products, customers, and orders with inventory tracking.
+* **Analytics Dashboard:** Real-time business insights including monthly revenue trends, best-selling products, customer frequency analysis, and inventory value calculations.
+* **Inventory Management:** Track product stock levels with automatic deduction on order creation and stock validation.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -85,17 +86,32 @@ The project follows a modular structure:
 
 ```bash
 smart_inventory/
-├── core/                           # Domain Layer (Logic & Models)
-│   └── Part 1 by BoyWonder.py      # OOP classes, exceptions & services
-├── database/                       # Data Layer (MySQL Persistence)
-│   ├── dao/
-│   │   └── Part 2 by BoyWonder.py  # Data Access Objects (CRUD logic)
-│   └── schema.sql                  # SQL table definitions
-├── web/                            # Presentation Layer (Django)
-│   └── django_project/             # Web interface and CRUD views
-└── analytics/                      # Analysis Layer (Data Science)
-    └── analysis.ipynb              # Pandas/NumPy business insights
+├── core/                                   # Domain Layer (OOP Logic & Services)
+│   ├── models/                             # Product, Customer, Order, OrderItem classes
+│   ├── services/                           # Business logic services
+│   └── exceptions/                         # Custom exception classes
+├── database/                               # Data Layer (MySQL Persistence)
+│   ├── dao/                                # Data Access Objects (CRUD logic)
+│   ├── schema.sql                          # SQL table definitions
+│   └── populate.sql                        # Sample data population script
+├── web/                                    # Presentation Layer (Django Web Interface)
+│   └── django_project/                     
+│       ├── business_app/                   # Main Django app with models, views, templates
+│       │   ├── models.py                   # Django ORM models
+│       │   ├── views.py                    # CRUD views & analytics dashboard
+│       │   ├── templates/                  # HTML templates for all pages
+│       │   └── migrations/                 # Database migration history
+│       ├── project_business_system/        # Django project settings & configuration
+│       └── manage.py                       # Django management script
+└── analytics/                              # Analysis Layer (Data Science)
+    └── analysis.ipynb                      # Jupyter notebook for Pandas/NumPy analysis
 ```
+
+**Key Models (Django):**
+- `Product`: name, category, price, quantity_in_stock
+- `Customer`: name, email (unique)
+- `Order`: customer (FK), order_date (auto)
+- `OrderItem`: order (FK), product (FK), quantity
 
 ## ⚡ Getting Started
 
@@ -133,20 +149,31 @@ Ensure you have Python installed.
     pip install -r requirements.txt
     ```
 
-4.  **Apply Database Migrations**
+4.  **Navigate to Django project**
+    ```bash
+    cd web/django_project
+    ```
+
+5.  **Apply Database Migrations**
     ```bash
     python manage.py migrate
     ```
+    This creates all necessary tables including:
+    - `business_app_product` (products with inventory)
+    - `business_app_customer` (registered customers)
+    - `business_app_order` (customer orders)
+    - `business_app_orderitem` (line items within orders)
 
-5.  **Create a Superuser** (Admin Access)
+6.  **Create a Superuser** (Admin Access - Optional)
     ```bash
     python manage.py createsuperuser
     ```
 
-6.  **Run the Server**
+7.  **Run the Server**
     ```bash
     python manage.py runserver
     ```
+    Server runs on `http://127.0.0.1:8000`
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -156,17 +183,39 @@ Ensure you have Python installed.
 
 ### Web Application
 Once the server is running, navigate to `http://127.0.0.1:8000` in your browser.
-*   **Admin Panel:** Access `http://127.0.0.1:8000/admin` to manage raw data.
-*   **Dashboard:** Log in to view the inventory dashboard.
+
+**Available Pages:**
+* **Home** (`/`): Landing page with navigation
+* **Products** (`/products/`): List all products with browse and create options
+  - Create Product: Add new products to inventory
+  - View Details: Check individual product information
+  - Update Product: Modify product name, category, price, or stock
+  - Delete Product: Remove products from inventory
+* **Customers** (`/register/`): Customer management
+  - Register Customer: Add new customers with email validation
+  - View Customer: See customer information
+* **Orders** (`/orders/` or `/create-order/`): Order management
+  - Create Order: Create new orders for customers with product selection and quantity
+  - Display Orders: View all orders with their line items and product details
+* **Analytics Dashboard** (`/analytics/`): Comprehensive business insights
+  - Monthly Revenue Trend Chart
+  - Best-Selling Products Analysis
+  - Total Inventory Stock Value
+  - Average Order Value
+  - Customer Order Frequency
+  - Key Metrics: Total Products, Customers, and Orders
+
+*   **Admin Panel:** Access `http://127.0.0.1:8000/admin` for raw data management (requires superuser).
 
 ### Data Analysis (Jupyter)
 To run the analysis notebooks:
 1.  Ensure your virtual environment is active.
-2.  Start Jupyter Lab/Notebook:
+2.  Navigate to the project root directory.
+3.  Start Jupyter Lab/Notebook:
     ```bash
     jupyter notebook
     ```
-3.  Open the `.ipynb` files located in the `analytics/` directory to view data visualizations.
+4.  Open `analytics/analysis.ipynb` to view data visualizations and analysis scripts.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
