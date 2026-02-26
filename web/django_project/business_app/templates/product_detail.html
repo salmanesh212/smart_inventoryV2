@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
 
-{% block title %}Product Details{% endblock %}
+{% block title %}{{ product.name }} - Product Details{% endblock %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumbs">
+    <li><a href="{% url 'home' %}"><i data-lucide="home" style="width:14px;height:14px;"></i></a></li>
+    <li><a href="{% url 'product_list' %}">Products</a></li>
+    <li><span class="current">{{ product.name }}</span></li>
+</ul>
+{% endblock %}
 
 {% block content %}
 <section class="card rise-in">
@@ -14,13 +22,49 @@
     </header>
 
     <ul class="data-points">
-        <li><i data-lucide="folder"></i> <strong>Category:</strong> {{ product.category }}</li>
-        <li><i data-lucide="dollar-sign"></i> <strong>Price:</strong> ${{ product.price }}</li>
+        <li><i data-lucide="hash"></i> <strong>ID:</strong> #{{ product.id }}</li>
+        <li><i data-lucide="folder"></i> <strong>Category:</strong> <span class="tag">{{ product.category }}</span></li>
+        <li><i data-lucide="dollar-sign"></i> <strong>Price:</strong> <span style="font-size:1.2rem;font-weight:700;">${{ product.price }}</span></li>
+        <li>
+            <i data-lucide="warehouse"></i> <strong>In Stock:</strong>
+            {% if product.quantity_in_stock <= 0 %}
+                <span class="tag tag--danger"><i data-lucide="alert-circle"></i> Out of stock</span>
+            {% elif product.quantity_in_stock <= 5 %}
+                <span class="tag tag--warning"><i data-lucide="alert-triangle"></i> {{ product.quantity_in_stock }} units &mdash; Low!</span>
+            {% elif product.quantity_in_stock <= 20 %}
+                <span class="tag tag--info">{{ product.quantity_in_stock }} units</span>
+            {% else %}
+                <span class="tag tag--success">{{ product.quantity_in_stock }} units</span>
+            {% endif %}
+        </li>
     </ul>
+
+    <!-- Stock Level Bar -->
+    <div style="margin:0.5rem 0 1.5rem;">
+        <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--brand-text-muted);margin-bottom:0.25rem;">
+            <span>Stock Level</span>
+            <span>{{ product.quantity_in_stock }} / 100</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-bar__fill{% if product.quantity_in_stock <= 0 %} progress-bar__fill--danger{% elif product.quantity_in_stock <= 5 %} progress-bar__fill--warning{% elif product.quantity_in_stock <= 20 %}{% else %} progress-bar__fill--success{% endif %}" style="width:{% widthratio product.quantity_in_stock 100 100 %}%"></div>
+        </div>
+    </div>
+
+    {% if product.quantity_in_stock <= 5 and product.quantity_in_stock > 0 %}
+    <div class="callout callout--amber" style="margin-bottom:1rem;">
+        <i data-lucide="alert-triangle"></i>
+        <div><strong>Low Stock Warning:</strong> Only {{ product.quantity_in_stock }} unit{{ product.quantity_in_stock|pluralize }} remaining. Consider restocking soon.</div>
+    </div>
+    {% elif product.quantity_in_stock <= 0 %}
+    <div class="callout callout--danger" style="margin-bottom:1rem;">
+        <i data-lucide="alert-circle"></i>
+        <div><strong>Out of Stock:</strong> This product is unavailable for new orders. Update stock to resume sales.</div>
+    </div>
+    {% endif %}
 
     <div class="split-actions">
         <a role="button" href="{% url 'product_update' product.id %}"><i data-lucide="edit-2"></i> Edit Product</a>
-        <a role="button" class="danger-action" href="{% url 'product_delete' product.id %}"><i data-lucide="trash-2"></i> Delete Product</a>
+        <button class="danger-action" onclick="showConfirm('Delete {{ product.name }}','This product will be permanently removed from the catalog. Any order history referencing it may be affected.',function(){window.location.href='{% url 'product_delete' product.id %}';})"><i data-lucide="trash-2"></i> Delete Product</button>
         <a role="button" class="secondary" href="{% url 'product_list' %}"><i data-lucide="arrow-left"></i> Back to Catalog</a>
     </div>
 </section>

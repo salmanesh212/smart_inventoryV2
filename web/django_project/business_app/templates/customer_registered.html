@@ -2,6 +2,13 @@
 
 {% block title %}Customer Registered{% endblock %}
 
+{% block breadcrumbs %}
+<ul class="breadcrumbs">
+    <li><a href="{% url 'home' %}"><i data-lucide="home" style="width:14px;height:14px;"></i></a></li>
+    <li><span class="current">Customer Registered</span></li>
+</ul>
+{% endblock %}
+
 {% block content %}
 <section class="card card--success rise-in">
     <div class="card-icon card-icon--success">
@@ -10,21 +17,41 @@
     <span class="tag tag--success"><i data-lucide="check-circle"></i> Customer Registered</span>
     <header>
         <h1>Profile Added Successfully!</h1>
-        <p class="helper-text">You're all set. Use the generated ID any time you create an order.</p>
+        <p class="helper-text">You're all set. Use the customer ID any time you create an order.</p>
     </header>
 
     <ul class="data-points">
         <li><i data-lucide="user"></i> <strong>Name:</strong> {{ customer.name }}</li>
         <li><i data-lucide="mail"></i> <strong>Email:</strong> {{ customer.email }}</li>
         {% if customer.id %}
-            <li><i data-lucide="hash"></i> <strong>Customer ID:</strong> {{ customer.id }} <small>(Save this for the ordering team.)</small></li>
+            <li>
+                <i data-lucide="hash"></i> <strong>Customer ID:</strong>
+                <span style="font-size:1.1rem;font-weight:700;color:var(--brand-primary);">{{ customer.id }}</span>
+                <button class="ghost" style="padding:0.2rem 0.5rem;font-size:0.75rem;box-shadow:none;" onclick="navigator.clipboard.writeText('{{ customer.id }}');showToast('Customer ID copied!','success');" data-tooltip="Copy ID">
+                    <i data-lucide="copy" style="width:14px;height:14px;"></i>
+                </button>
+                <small class="helper-text">(Save this for the ordering team.)</small>
+            </li>
         {% endif %}
     </ul>
 
-    <div class="split-actions">
+    <div class="countdown-badge">
+        <i data-lucide="clock"></i> Redirecting to create order in <span id="cd">8</span>s...
+    </div>
+
+    <div class="split-actions" style="margin-top:1rem;">
         <a role="button" href="{% url 'create_order' %}"><i data-lucide="shopping-cart"></i> Create Order</a>
+        <a role="button" class="secondary" href="{% url 'register_customer' %}"><i data-lucide="user-plus"></i> Register Another</a>
         <a role="button" class="secondary" href="{% url 'home' %}"><i data-lucide="home"></i> Home</a>
     </div>
 </section>
+
+{% block extra_js %}
+<script>
+launchConfetti();
+showToast('Customer registered successfully!', 'success');
+startCountdown('cd', '{% url "create_order" %}', 8);
+</script>
+{% endblock %}
 <script>lucide.createIcons();</script>
 {% endblock %}

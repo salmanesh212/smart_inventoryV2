@@ -2,6 +2,14 @@
 
 {% block title %}Product Deleted{% endblock %}
 
+{% block breadcrumbs %}
+<ul class="breadcrumbs">
+    <li><a href="{% url 'home' %}"><i data-lucide="home" style="width:14px;height:14px;"></i></a></li>
+    <li><a href="{% url 'product_list' %}">Products</a></li>
+    <li><span class="current">Deleted</span></li>
+</ul>
+{% endblock %}
+
 {% block content %}
 <section class="card card--danger rise-in">
     <div class="card-icon card-icon--danger">
@@ -16,11 +24,23 @@
         <i data-lucide="info"></i>
         <div>Need a replacement? Add a new product so the gap is covered.</div>
     </div>
-    <div class="split-actions">
+
+    <div class="countdown-badge">
+        <i data-lucide="clock"></i> Redirecting to catalog in <span id="cd">5</span>s...
+    </div>
+
+    <div class="split-actions" style="margin-top:1rem;">
         <a role="button" href="{% url 'create_product' %}"><i data-lucide="plus"></i> Add Product</a>
         <a role="button" class="secondary" href="{% url 'product_list' %}"><i data-lucide="list"></i> View Catalog</a>
         <a role="button" class="secondary" href="{% url 'home' %}"><i data-lucide="home"></i> Dashboard</a>
     </div>
 </section>
+
+{% block extra_js %}
+<script>
+showToast('Product deleted.', 'danger');
+startCountdown('cd', '{% url "product_list" %}', 5);
+</script>
+{% endblock %}
 <script>lucide.createIcons();</script>
 {% endblock %}

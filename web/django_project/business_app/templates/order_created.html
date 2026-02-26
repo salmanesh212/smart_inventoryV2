@@ -2,6 +2,14 @@
 
 {% block title %}Order Created{% endblock %}
 
+{% block breadcrumbs %}
+<ul class="breadcrumbs">
+    <li><a href="{% url 'home' %}"><i data-lucide="home" style="width:14px;height:14px;"></i></a></li>
+    <li><a href="{% url 'display_orders' %}">Orders</a></li>
+    <li><span class="current">Order #{{ order.id }}</span></li>
+</ul>
+{% endblock %}
+
 {% block content %}
 <section class="card card--success rise-in">
     <div class="card-icon card-icon--success">
@@ -9,8 +17,8 @@
     </div>
     <span class="tag tag--success"><i data-lucide="sparkles"></i> Order Created</span>
     <header>
-        <h1>Success!</h1>
-        <p class="helper-text">Order #{{ order.id }} is now live in the system and ready for processing.</p>
+        <h1>Order Confirmed!</h1>
+        <p class="helper-text">Order <strong>#{{ order.id }}</strong> is now live in the system and ready for processing.</p>
     </header>
 
     <ul class="data-points">
@@ -19,7 +27,7 @@
         <li><i data-lucide="user"></i> <strong>Customer:</strong> {{ order.customer.name }}</li>
     </ul>
 
-    <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem;"><i data-lucide="package" style="width:18px;height:18px;display:inline;vertical-align:middle;"></i> Order Items</h3>
+    <h3 style="margin-top:1.5rem;margin-bottom:0.75rem;"><i data-lucide="package" style="width:18px;height:18px;display:inline;vertical-align:middle;"></i> Order Items</h3>
     <div class="table-card">
         <table role="grid">
             <thead>
@@ -40,18 +48,30 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="4" style="text-align: center;">No items in this order.</td>
+                    <td colspan="4" style="text-align:center;">No items in this order.</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 
-    <div class="split-actions" style="margin-top: 1.5rem;">
+    <div class="countdown-badge" style="margin-top:1rem;">
+        <i data-lucide="clock"></i> Redirecting to orders in <span id="cd">8</span>s...
+    </div>
+
+    <div class="split-actions" style="margin-top:1rem;">
         <a role="button" href="{% url 'create_order' %}"><i data-lucide="plus"></i> Create Another</a>
         <a role="button" class="secondary" href="{% url 'display_orders' %}"><i data-lucide="list"></i> View Orders</a>
         <a role="button" class="secondary" href="{% url 'home' %}"><i data-lucide="home"></i> Dashboard</a>
     </div>
 </section>
+
+{% block extra_js %}
+<script>
+launchConfetti();
+showToast('Order #{{ order.id }} created successfully!', 'success');
+startCountdown('cd', '{% url "display_orders" %}', 8);
+</script>
+{% endblock %}
 <script>lucide.createIcons();</script>
 {% endblock %}

@@ -1,57 +1,140 @@
 {% extends 'base.html' %}
 
-{% block title %}Product List{% endblock %}
+{% block title %}Product Catalog{% endblock %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumbs">
+    <li><a href="{% url 'home' %}"><i data-lucide="home" style="width:14px;height:14px;"></i></a></li>
+    <li><span class="current">Products</span></li>
+</ul>
+{% endblock %}
 
 {% block content %}
 <section class="card rise-in">
-    <div class="card-icon card-icon--primary">
-        <i data-lucide="package"></i>
-    </div>
-    <div class="eyebrow"><i data-lucide="layers"></i> Products</div>
-    <header class="section-header">
+    <div class="section-header" style="margin-bottom:1.5rem;">
         <div>
+            <div class="eyebrow"><i data-lucide="layers"></i> Inventory</div>
             <h1>Product Catalog</h1>
             <p class="helper-text">Browse everything in your catalog and make edits in seconds.</p>
         </div>
         <a href="{% url 'create_product' %}" role="button"><i data-lucide="plus"></i> Add Product</a>
-    </header>
+    </div>
+
+    <!-- Search & Filter Bar -->
+    <div style="display:flex;gap:0.75rem;margin-bottom:1.25rem;flex-wrap:wrap;align-items:center;">
+        <div class="input-group" style="flex:1;min-width:220px;">
+            <span class="input-icon"><i data-lucide="search"></i></span>
+            <input type="text" id="tableSearch" placeholder="Search products..." oninput="filterTable()" style="min-height:42px;">
+        </div>
+        <select id="categoryFilter" onchange="filterTable()" style="min-height:42px;width:auto;min-width:160px;">
+            <option value="">All Categories</option>
+        </select>
+        <span class="tag" id="resultCount"><i data-lucide="database"></i> <span id="countNum">0</span> products</span>
+    </div>
 
     <div class="table-card">
-        <table role="grid">
+        <div class="table-wrap">
+        <table role="grid" id="productTable">
             <thead>
                 <tr>
-                    <th scope="col"><i data-lucide="tag" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> Name</th>
-                    <th scope="col"><i data-lucide="folder" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> Category</th>
-                    <th scope="col"><i data-lucide="dollar-sign" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> Price</th>
-                    <th scope="col"><i data-lucide="settings" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> Actions</th>
+                    <th class="sortable" onclick="sortTable(0)" data-tooltip="Sort by name"><i data-lucide="tag" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> Name <i data-lucide="arrow-up-down" style="width:12px;height:12px;display:inline;vertical-align:middle;opacity:0.4;"></i></th>
+                    <th class="sortable" onclick="sortTable(1)" data-tooltip="Sort by category"><i data-lucide="folder" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> Category <i data-lucide="arrow-up-down" style="width:12px;height:12px;display:inline;vertical-align:middle;opacity:0.4;"></i></th>
+                    <th class="sortable" onclick="sortTable(2)" data-tooltip="Sort by price"><i data-lucide="dollar-sign" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> Price <i data-lucide="arrow-up-down" style="width:12px;height:12px;display:inline;vertical-align:middle;opacity:0.4;"></i></th>
+                    <th class="sortable" onclick="sortTable(3)" data-tooltip="Sort by stock"><i data-lucide="warehouse" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> Stock <i data-lucide="arrow-up-down" style="width:12px;height:12px;display:inline;vertical-align:middle;opacity:0.4;"></i></th>
+                    <th><i data-lucide="settings" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="productTableBody">
                 {% for product in products %}
-                <tr>
+                <tr data-category="{{ product.category }}">
                     <td><a href="{% url 'product_read' product.id %}"><strong>{{ product.name }}</strong></a></td>
                     <td><span class="tag">{{ product.category }}</span></td>
                     <td><strong>${{ product.price }}</strong></td>
                     <td>
-                        <div class="split-actions" style="gap: 0.5rem;">
-                            <a href="{% url 'product_update' product.id %}" role="button" class="secondary"><i data-lucide="edit-2"></i> Edit</a>
-                            <a href="{% url 'product_delete' product.id %}" role="button" class="danger-action"><i data-lucide="trash-2"></i> Delete</a>
+                        {% if product.quantity_in_stock <= 0 %}
+                            <span class="tag tag--danger"><i data-lucide="alert-circle"></i> Out of stock</span>
+                        {% elif product.quantity_in_stock <= 5 %}
+                            <span class="tag tag--warning"><i data-lucide="alert-triangle"></i> {{ product.quantity_in_stock }} left</span>
+                        {% elif product.quantity_in_stock <= 20 %}
+                            <span class="tag tag--info">{{ product.quantity_in_stock }} units</span>
+                        {% else %}
+                            <span class="tag tag--success">{{ product.quantity_in_stock }} units</span>
+                        {% endif %}
+                        <div class="progress-bar" style="height:4px;margin-top:4px;">
+                            <div class="progress-bar__fill{% if product.quantity_in_stock <= 0 %} progress-bar__fill--danger{% elif product.quantity_in_stock <= 5 %} progress-bar__fill--warning{% elif product.quantity_in_stock <= 20 %}{% else %} progress-bar__fill--success{% endif %}" style="width:{% widthratio product.quantity_in_stock 100 100 %}%"></div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="split-actions" style="gap:0.5rem;">
+                            <a href="{% url 'product_update' product.id %}" role="button" class="secondary" data-tooltip="Edit product"><i data-lucide="edit-2"></i> Edit</a>
+                            <button class="danger-action" onclick="showConfirm('Delete Product','Are you sure you want to permanently delete {{ product.name }}? This cannot be undone.',function(){window.location.href='{% url 'product_delete' product.id %}';})" data-tooltip="Delete product"><i data-lucide="trash-2"></i> Delete</button>
                         </div>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="4" style="text-align: center; padding: 2rem;">
-                        <div style="color: var(--brand-text-muted);">
-                            <i data-lucide="inbox" style="width:32px;height:32px;display:block;margin:0 auto 0.5rem;"></i>
-                            No products found. Add your first product to get started.
+                    <td colspan="5">
+                        <div class="empty-state">
+                            <i data-lucide="inbox"></i>
+                            <h3>No products yet</h3>
+                            <p>Your catalog is empty. Add your first product to get started.</p>
+                            <a href="{% url 'create_product' %}" role="button"><i data-lucide="plus"></i> Add First Product</a>
                         </div>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        </div>
     </div>
 </section>
+
+{% block extra_js %}
+<script>
+// Populate category filter
+(function(){
+    var cats = new Set();
+    document.querySelectorAll('#productTableBody tr[data-category]').forEach(function(r){ cats.add(r.getAttribute('data-category')); });
+    var sel = document.getElementById('categoryFilter');
+    cats.forEach(function(c){ var o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o); });
+    updateCount();
+})();
+
+function filterTable(){
+    var q = document.getElementById('tableSearch').value.toLowerCase();
+    var cat = document.getElementById('categoryFilter').value;
+    var rows = document.querySelectorAll('#productTableBody tr[data-category]');
+    rows.forEach(function(r){
+        var text = r.textContent.toLowerCase();
+        var rc = r.getAttribute('data-category');
+        var show = text.includes(q) && (!cat || rc === cat);
+        r.style.display = show ? '' : 'none';
+    });
+    updateCount();
+}
+
+function updateCount(){
+    var visible = document.querySelectorAll('#productTableBody tr[data-category]:not([style*="display: none"])').length;
+    var el = document.getElementById('countNum');
+    if(el) el.textContent = visible;
+}
+
+var sortDir = [1,1,1,1];
+function sortTable(col){
+    var tbody = document.getElementById('productTableBody');
+    var rows = Array.from(tbody.querySelectorAll('tr[data-category]'));
+    sortDir[col] *= -1;
+    rows.sort(function(a,b){
+        var aVal = a.cells[col].textContent.trim().replace('$','');
+        var bVal = b.cells[col].textContent.trim().replace('$','');
+        var aNum = parseFloat(aVal);
+        var bNum = parseFloat(bVal);
+        if(!isNaN(aNum) && !isNaN(bNum)) return (aNum - bNum) * sortDir[col];
+        return aVal.localeCompare(bVal) * sortDir[col];
+    });
+    rows.forEach(function(r){ tbody.appendChild(r); });
+}
+</script>
+{% endblock %}
 <script>lucide.createIcons();</script>
 {% endblock %}

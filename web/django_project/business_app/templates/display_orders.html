@@ -1,71 +1,119 @@
 {% extends 'base.html' %}
 
-{% block title %}All Orders{% endblock %}
+{% block title %}Order History{% endblock %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumbs">
+    <li><a href="{% url 'home' %}"><i data-lucide="home" style="width:14px;height:14px;"></i></a></li>
+    <li><span class="current">Orders</span></li>
+</ul>
+{% endblock %}
 
 {% block content %}
 <section class="card rise-in">
     <div class="card-icon card-icon--warning">
         <i data-lucide="receipt"></i>
     </div>
-    <div class="eyebrow"><i data-lucide="clock"></i> Orders</div>
-    <header class="section-header">
+    <div class="section-header" style="margin-bottom:1.25rem;">
         <div>
+            <div class="eyebrow"><i data-lucide="clock"></i> Order Management</div>
             <h1>Order History</h1>
             {% if orders %}
-                <span class="tag"><i data-lucide="database"></i> {{ orders|length }} records</span>
+                <span class="tag"><i data-lucide="database"></i> <span class="pulse-dot"></span> {{ orders|length }} record{{ orders|length|pluralize }}</span>
             {% endif %}
             <p class="helper-text">Track every booking in chronological order to keep logistics transparent.</p>
         </div>
         <a role="button" href="{% url 'create_order' %}"><i data-lucide="plus"></i> New Order</a>
-    </header>
+    </div>
+
+    <!-- Search orders -->
+    {% if orders %}
+    <div style="margin-bottom:1.25rem;">
+        <div class="input-group" style="max-width:380px;">
+            <span class="input-icon"><i data-lucide="search"></i></span>
+            <input type="text" id="orderSearch" placeholder="Search orders by customer..." oninput="filterOrders()" style="min-height:42px;">
+        </div>
+    </div>
+    {% endif %}
 
     {% if orders %}
         {% for order in orders %}
-        <div class="card card--soft" style="margin-bottom: 1rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div class="card card--soft order-card rise-in" style="margin-bottom:1rem;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
                 <div>
                     <span class="tag"><i data-lucide="hash"></i> Order #{{ order.id }}</span>
-                    <h3 style="margin: 0.5rem 0;"><i data-lucide="user" style="width:18px;height:18px;display:inline;vertical-align:middle;"></i> {{ order.customer.name }}</h3>
-                    <p class="helper-text" style="margin: 0;"><i data-lucide="calendar" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> {{ order.order_date }}</p>
+                    <h3 style="margin:0.5rem 0;"><i data-lucide="user" style="width:18px;height:18px;display:inline;vertical-align:middle;"></i> {{ order.customer.name }}</h3>
+                    <p class="helper-text" style="margin:0;"><i data-lucide="calendar" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> {{ order.order_date }}</p>
+                </div>
+                <div style="text-align:right;">
+                    <small class="helper-text">Order Total</small>
+                    <div class="stat-value" style="font-size:1.5rem;">
+                        {% with items=order.items.all %}
+                        {% if items %}
+                            ${% for item in items %}{% if not forloop.first %}{% endif %}{{ item.get_subtotal }}{% if forloop.last %}{% endif %}{% endfor %}
+                        {% else %}
+                            $0.00
+                        {% endif %}
+                        {% endwith %}
+                    </div>
                 </div>
             </div>
-            
+
             {% if order.items.all %}
-            <div class="table-card" style="margin-top: 1rem;">
+            <div class="table-card" style="margin-top:1rem;">
                 <table role="grid">
                     <thead>
                         <tr>
                             <th><i data-lucide="package" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> Product</th>
                             <th><i data-lucide="hash" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> Qty</th>
-                            <th><i data-lucide="dollar-sign" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> Price</th>
+                            <th><i data-lucide="dollar-sign" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> Unit Price</th>
+                            <th><i data-lucide="calculator" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> Subtotal</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for item in order.items.all %}
                         <tr>
-                            <td>{{ item.product.name }}</td>
+                            <td><strong>{{ item.product.name }}</strong></td>
                             <td>{{ item.quantity }}</td>
                             <td>${{ item.product.price }}</td>
+                            <td><strong>${{ item.get_subtotal }}</strong></td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
             {% else %}
-            <p class="helper-text" style="margin-top: 1rem;">No items in this order.</p>
+            <div class="callout callout--info" style="margin-top:1rem;">
+                <i data-lucide="info"></i>
+                <div>No items recorded for this order.</div>
+            </div>
             {% endif %}
         </div>
         {% endfor %}
     {% else %}
-        <div class="callout callout--amber">
+        <div class="empty-state">
             <i data-lucide="inbox"></i>
-            <div>No orders found just yet. Kick things off by logging your first sale.</div>
+            <h3>No orders yet</h3>
+            <p>Kick things off by logging your first sale.</p>
+            <a role="button" href="{% url 'create_order' %}"><i data-lucide="plus"></i> Create First Order</a>
         </div>
     {% endif %}
 
-    <div class="split-actions">
+    <div class="split-actions" style="margin-top:1rem;">
         <a role="button" class="secondary" href="{% url 'home' %}"><i data-lucide="arrow-left"></i> Back to Home</a>
+        <a role="button" class="ghost" href="{% url 'analytics_dashboard' %}"><i data-lucide="bar-chart-3"></i> View Analytics</a>
     </div>
 </section>
+
+{% block extra_js %}
+<script>
+function filterOrders(){
+    var q = document.getElementById('orderSearch').value.toLowerCase();
+    document.querySelectorAll('.order-card').forEach(function(c){
+        c.style.display = c.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+}
+</script>
+{% endblock %}
 <script>lucide.createIcons();</script>
 {% endblock %}

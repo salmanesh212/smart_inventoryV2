@@ -1,20 +1,60 @@
 {% extends 'base.html' %}
 
-{% block title %}Home - Business System{% endblock %}
+{% block title %}Home - Smart Inventory{% endblock %}
 
 {% block content %}
 <section class="hero rise-in">
     <p class="eyebrow"><i data-lucide="zap"></i> Command Center</p>
     <h1>Welcome to Your Dashboard</h1>
-    <p class="helper-text">Everything you need to keep products, customers, and orders perfectly in sync — all in one place.</p>
+    <p class="helper-text">Everything you need to keep products, customers, and orders perfectly in sync &mdash; all in one place.</p>
     <div class="split-actions">
         <a role="button" href="{% url 'create_order' %}"><i data-lucide="plus-circle"></i> Quick Order</a>
         <a role="button" class="secondary" href="{% url 'product_list' %}"><i data-lucide="package-search"></i> View Catalog</a>
     </div>
 </section>
 
+<!-- Quick Stats Banner -->
+<div class="action-grid" style="margin-bottom:0;">
+    <article class="card card--clickable rise-in" onclick="window.location.href='{% url 'product_list' %}'" style="text-align:center;padding:1.25rem;">
+        <div style="display:flex;align-items:center;gap:0.75rem;justify-content:center;">
+            <div class="card-icon card-icon--primary" style="width:42px;height:42px;margin:0;"><i data-lucide="package" style="width:22px;height:22px;"></i></div>
+            <div style="text-align:left;">
+                <div class="stat-value" style="font-size:1.75rem;" data-counter="{{ total_products }}">{{ total_products }}</div>
+                <small class="helper-text">Products</small>
+            </div>
+        </div>
+    </article>
+
+    <article class="card card--clickable rise-in" onclick="window.location.href='{% url 'register_customer' %}'" style="text-align:center;padding:1.25rem;">
+        <div style="display:flex;align-items:center;gap:0.75rem;justify-content:center;">
+            <div class="card-icon card-icon--success" style="width:42px;height:42px;margin:0;"><i data-lucide="users" style="width:22px;height:22px;"></i></div>
+            <div style="text-align:left;">
+                <div class="stat-value" style="font-size:1.75rem;" data-counter="{{ total_customers }}">{{ total_customers }}</div>
+                <small class="helper-text">Customers</small>
+            </div>
+        </div>
+    </article>
+
+    <article class="card card--clickable rise-in" onclick="window.location.href='{% url 'display_orders' %}'" style="text-align:center;padding:1.25rem;">
+        <div style="display:flex;align-items:center;gap:0.75rem;justify-content:center;">
+            <div class="card-icon card-icon--warning" style="width:42px;height:42px;margin:0;"><i data-lucide="shopping-cart" style="width:22px;height:22px;"></i></div>
+            <div style="text-align:left;">
+                <div class="stat-value" style="font-size:1.75rem;" data-counter="{{ total_orders }}">{{ total_orders }}</div>
+                <small class="helper-text">Orders</small>
+            </div>
+        </div>
+    </article>
+</div>
+
+{% if low_stock > 0 %}
+<div class="callout callout--amber rise-in" style="margin-bottom:0;">
+    <i data-lucide="alert-triangle"></i>
+    <div><strong>Low Stock Alert:</strong> {{ low_stock }} product{{ low_stock|pluralize }} ha{{ low_stock|pluralize:"s,ve" }} 5 or fewer units remaining. <a href="{% url 'product_list' %}">Review inventory &rarr;</a></div>
+</div>
+{% endif %}
+
 <div class="action-grid">
-    <article class="card card--soft rise-in">
+    <article class="card card--soft card--clickable rise-in">
         <div class="card-icon card-icon--primary">
             <i data-lucide="package"></i>
         </div>
@@ -31,7 +71,7 @@
         </footer>
     </article>
 
-    <article class="card rise-in">
+    <article class="card card--clickable rise-in">
         <div class="card-icon card-icon--success">
             <i data-lucide="users"></i>
         </div>
@@ -45,7 +85,7 @@
         </footer>
     </article>
 
-    <article class="card card--accent rise-in">
+    <article class="card card--accent card--clickable rise-in">
         <div class="card-icon card-icon--warning">
             <i data-lucide="shopping-cart"></i>
         </div>
@@ -63,5 +103,25 @@
     </article>
 </div>
 
-<script>lucide.createIcons();</script>
+<!-- Keyboard shortcuts hint -->
+<div class="card card--soft rise-in" style="padding:1rem 1.5rem;">
+    <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:0.5rem;">
+            <i data-lucide="keyboard" style="width:18px;height:18px;color:var(--brand-text-muted);"></i>
+            <small class="helper-text" style="font-weight:600;">Keyboard Shortcuts</small>
+        </div>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+            <small class="helper-text"><kbd style="padding:0.15rem 0.4rem;border-radius:4px;background:var(--brand-surface);border:1px solid var(--brand-border);font-size:0.7rem;">Ctrl+K</kbd> Search</small>
+            <small class="helper-text"><kbd style="padding:0.15rem 0.4rem;border-radius:4px;background:var(--brand-surface);border:1px solid var(--brand-border);font-size:0.7rem;">&uarr;&darr;</kbd> Navigate</small>
+            <small class="helper-text"><kbd style="padding:0.15rem 0.4rem;border-radius:4px;background:var(--brand-surface);border:1px solid var(--brand-border);font-size:0.7rem;">Enter</kbd> Open</small>
+        </div>
+    </div>
+</div>
+
+<script>
+lucide.createIcons();
+document.querySelectorAll('[data-counter]').forEach(function(el){
+    animateCounter(el, parseInt(el.getAttribute('data-counter')));
+});
+</script>
 {% endblock %}

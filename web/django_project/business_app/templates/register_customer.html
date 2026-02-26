@@ -2,6 +2,13 @@
 
 {% block title %}Register Customer{% endblock %}
 
+{% block breadcrumbs %}
+<ul class="breadcrumbs">
+    <li><a href="{% url 'home' %}"><i data-lucide="home" style="width:14px;height:14px;"></i></a></li>
+    <li><span class="current">Register Customer</span></li>
+</ul>
+{% endblock %}
+
 {% block content %}
 <section class="card rise-in">
     <div class="card-icon card-icon--success">
@@ -13,26 +20,47 @@
         <p class="helper-text">Capture primary contact info so future orders and invoices auto-fill correctly.</p>
     </header>
 
-    <form method="POST">
+    <form method="POST" id="customerForm">
         {% csrf_token %}
         <div class="form-grid form-grid--two">
             <div>
-                <label for="name"><i data-lucide="user"></i> Full Name</label>
-                <input type="text" id="name" name="name" placeholder="Jordan Williams" required>
+                <label for="name"><i data-lucide="user"></i> Full Name <span class="required-star">*</span></label>
+                <input type="text" id="name" name="name" placeholder="Jordan Williams" required minlength="2" maxlength="100">
+                <p class="field-hint">First and last name of the customer.</p>
             </div>
             <div>
-                <label for="email"><i data-lucide="mail"></i> Email Address</label>
+                <label for="email"><i data-lucide="mail"></i> Email Address <span class="required-star">*</span></label>
                 <input type="email" id="email" name="email" placeholder="jordan@client.io" required>
+                <p class="field-hint">We'll use this for order confirmations.</p>
             </div>
         </div>
 
-        <p class="helper-text"><i data-lucide="info" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> We only require essentials—add phone numbers and billing notes directly from the customer profile later.</p>
+        <div class="callout callout--info">
+            <i data-lucide="info"></i>
+            <div>We only require essentials&mdash;add phone numbers and billing notes directly from the customer profile later.</div>
+        </div>
 
         <div class="split-actions">
-            <button type="submit"><i data-lucide="user-check"></i> Register Customer</button>
+            <button type="submit" id="regBtn"><i data-lucide="user-check"></i> Register Customer</button>
             <a role="button" class="secondary" href="{% url 'home' %}"><i data-lucide="x"></i> Cancel</a>
         </div>
     </form>
 </section>
+
+{% block extra_js %}
+<script>
+// Real-time email validation visual
+document.getElementById('email').addEventListener('input', function(){
+    var valid = this.checkValidity() && this.value.length > 0;
+    this.style.borderColor = this.value.length === 0 ? '' : (valid ? 'var(--brand-success)' : 'var(--brand-danger)');
+});
+
+document.getElementById('customerForm').addEventListener('submit', function(e){
+    var btn = document.getElementById('regBtn');
+    btn.classList.add('loading');
+    btn.disabled = true;
+});
+</script>
+{% endblock %}
 <script>lucide.createIcons();</script>
 {% endblock %}

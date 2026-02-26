@@ -2,6 +2,14 @@
 
 {% block title %}Create Product{% endblock %}
 
+{% block breadcrumbs %}
+<ul class="breadcrumbs">
+    <li><a href="{% url 'home' %}"><i data-lucide="home" style="width:14px;height:14px;"></i></a></li>
+    <li><a href="{% url 'product_list' %}">Products</a></li>
+    <li><span class="current">Create Product</span></li>
+</ul>
+{% endblock %}
+
 {% block content %}
 <section class="card card--soft rise-in">
     <div class="card-icon card-icon--primary">
@@ -13,31 +21,54 @@
         <p class="helper-text">Capture the essentials so pricing, forecasting, and ordering stay aligned.</p>
     </header>
 
-    <form method="POST">
+    <form method="POST" id="createProductForm">
         {% csrf_token %}
         <div class="form-grid form-grid--two">
             <div>
-                <label for="name"><i data-lucide="tag"></i> Product Name</label>
-                <input type="text" id="name" name="name" placeholder="E.g. Latitude 7440" required>
+                <label for="name"><i data-lucide="tag"></i> Product Name <span class="required-star">*</span></label>
+                <input type="text" id="name" name="name" placeholder="E.g. Latitude 7440" required minlength="2" maxlength="100">
+                <p class="field-hint">Give it a clear, descriptive name.</p>
             </div>
             <div>
-                <label for="category"><i data-lucide="folder"></i> Category</label>
-                <input type="text" id="category" name="category" placeholder="E.g. Electronics" required>
+                <label for="category"><i data-lucide="folder"></i> Category <span class="required-star">*</span></label>
+                <input type="text" id="category" name="category" placeholder="E.g. Electronics" required minlength="2" maxlength="50">
+                <p class="field-hint">Group similar products together.</p>
             </div>
         </div>
 
-        <div>
-            <label for="price"><i data-lucide="dollar-sign"></i> Price (USD)</label>
-            <input type="number" step="0.01" id="price" name="price" placeholder="1299.00" required>
+        <div class="form-grid form-grid--two">
+            <div>
+                <label for="price"><i data-lucide="dollar-sign"></i> Price (USD) <span class="required-star">*</span></label>
+                <input type="number" step="0.01" min="0.01" id="price" name="price" placeholder="1299.00" required>
+                <p class="field-hint">Retail unit price before tax.</p>
+            </div>
+            <div>
+                <label for="quantity_in_stock"><i data-lucide="warehouse"></i> Initial Stock</label>
+                <input type="number" min="0" id="quantity_in_stock" name="quantity_in_stock" placeholder="50" value="0">
+                <p class="field-hint">How many units to start with.</p>
+            </div>
         </div>
 
-        <p class="helper-text"><i data-lucide="info" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> You can always refine inventory attributes later from the product detail page.</p>
+        <div class="callout callout--info">
+            <i data-lucide="info"></i>
+            <div>You can always refine inventory attributes later from the product detail page.</div>
+        </div>
 
         <div class="split-actions">
-            <button type="submit"><i data-lucide="plus"></i> Create Product</button>
+            <button type="submit" id="submitBtn"><i data-lucide="plus"></i> Create Product</button>
             <a role="button" class="secondary" href="{% url 'product_list' %}"><i data-lucide="list"></i> View Catalog</a>
         </div>
     </form>
 </section>
+
+{% block extra_js %}
+<script>
+document.getElementById('createProductForm').addEventListener('submit', function(e){
+    var btn = document.getElementById('submitBtn');
+    btn.classList.add('loading');
+    btn.disabled = true;
+});
+</script>
+{% endblock %}
 <script>lucide.createIcons();</script>
 {% endblock %}

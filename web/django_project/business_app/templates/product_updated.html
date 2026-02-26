@@ -2,6 +2,15 @@
 
 {% block title %}Product Updated{% endblock %}
 
+{% block breadcrumbs %}
+<ul class="breadcrumbs">
+    <li><a href="{% url 'home' %}"><i data-lucide="home" style="width:14px;height:14px;"></i></a></li>
+    <li><a href="{% url 'product_list' %}">Products</a></li>
+    <li><a href="{% url 'product_read' product.id %}">{{ product.name }}</a></li>
+    <li><span class="current">Updated</span></li>
+</ul>
+{% endblock %}
+
 {% block content %}
 <section class="card card--success rise-in">
     <div class="card-icon card-icon--success">
@@ -15,15 +24,27 @@
 
     <ul class="data-points">
         <li><i data-lucide="tag"></i> <strong>Name:</strong> {{ product.name }}</li>
-        <li><i data-lucide="folder"></i> <strong>Category:</strong> {{ product.category }}</li>
+        <li><i data-lucide="folder"></i> <strong>Category:</strong> <span class="tag">{{ product.category }}</span></li>
         <li><i data-lucide="dollar-sign"></i> <strong>Price:</strong> ${{ product.price }}</li>
+        <li><i data-lucide="warehouse"></i> <strong>Stock:</strong> {{ product.quantity_in_stock }} units</li>
     </ul>
 
-    <div class="split-actions">
+    <div class="countdown-badge">
+        <i data-lucide="clock"></i> Redirecting to product in <span id="cd">6</span>s...
+    </div>
+
+    <div class="split-actions" style="margin-top:1rem;">
         <a role="button" href="{% url 'product_read' product.id %}"><i data-lucide="eye"></i> View Product</a>
         <a role="button" class="secondary" href="{% url 'product_list' %}"><i data-lucide="list"></i> Catalog</a>
         <a role="button" class="secondary" href="{% url 'home' %}"><i data-lucide="home"></i> Dashboard</a>
     </div>
 </section>
+
+{% block extra_js %}
+<script>
+showToast('Product updated successfully!', 'success');
+startCountdown('cd', '{% url "product_read" product.id %}', 6);
+</script>
+{% endblock %}
 <script>lucide.createIcons();</script>
 {% endblock %}

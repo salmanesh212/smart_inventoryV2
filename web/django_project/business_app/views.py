@@ -15,8 +15,18 @@ logger = logging.getLogger(__name__)
 
 
 def home(request: HttpRequest) -> HttpResponse:
-    """Render the home page."""
-    return render(request, 'index.html')
+    """Render the home page with quick stats."""
+    total_products = Product.objects.count()
+    total_customers = Customer.objects.count()
+    total_orders = Order.objects.count()
+    low_stock = Product.objects.filter(quantity_in_stock__lte=5).count()
+    context = {
+        'total_products': total_products,
+        'total_customers': total_customers,
+        'total_orders': total_orders,
+        'low_stock': low_stock,
+    }
+    return render(request, 'index.html', context)
 
 
 def list_products(request: HttpRequest) -> HttpResponse:
